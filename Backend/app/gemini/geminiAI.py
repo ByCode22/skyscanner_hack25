@@ -1,11 +1,14 @@
 import google.generativeai as genai
-from gemini.config import API_KEY
+from app.gemini.config import API_KEY
 
 # Configurar la clave de API de Gemini
 genai.configure(api_key=API_KEY)
 
 def generar_prompt_pregunta(history):
-    history_text = "\n".join([f"- {pregunta}: {respuesta}" for pregunta, respuesta in history.items()])
+    if len(history) > 0:
+        history_text = "\n".join([f"- {pregunta}: {respuesta}" for pregunta, respuesta in history.items()])
+    else:
+        history_text = "Aún no hay respuestas"
 
     prompt = f"""
 Estás ayudando a un grupo de personas a decidir un destino de viaje en Europa occidental.
@@ -20,19 +23,23 @@ Reglas:
 - No repitas preguntas anteriores.
 - La pregunta debe ser más específica que las anteriores.
 - NO sugieras destinos.
+- Las opciones máximo tres palabras
 
 ⚠️ Devuelve solo un JSON con el siguiente formato (sin texto adicional):
 
 {{
     "question": "Texto de la nueva pregunta",
-    "options": ["Opción 1", "Opción 2", "Opción 3", "Opción 4"]
+    "options": ["Ninguna", "Opción 1", "Opción 2", "Opción 3", "Opción 4"]
 }}
 """
     return prompt
 
 
 def generar_prompt_sugerencia(history):
-    history_text = "\n".join([f"- {pregunta}: {respuesta}" for pregunta, respuesta in history.items()])
+    if len(history) > 0:
+        history_text = "\n".join([f"- {pregunta}: {respuesta}" for pregunta, respuesta in history.items()])
+    else:
+        history_text = "Aún no hay respuestas"
 
     prompt = f"""
 Estás ayudando a un grupo de personas a elegir un país de Europa occidental para su viaje.
@@ -62,10 +69,13 @@ def obtener_respuesta(history, contador_preguntas):
     try:
         model = genai.GenerativeModel("gemini-2.0-flash-lite")
         respuesta = model.generate_content(prompt)
-        if respuesta and respuesta.text.strip():
-            return [respuesta.text.strip()]
+        if respuesta:
+            return respuesta.text
         else:
-            return ["Lo siento, no pude generar una pregunta en este momento."]
+            return "Lo siento, no pude generar una pregunta en este momento."
     except Exception as e:
         print(f"Error al generar preguntas: {e}")
-        return ["Lo siento, hubo un error al generar las preguntas."]
+        return "Lo siento, hubo un error al generar las preguntas."
+
+if __name__ == "__main__":
+    print(obtener_respuesta([], 1))
