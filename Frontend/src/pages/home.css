@@ -1,11 +1,13 @@
-/* home.css */
-
 /* Estilo general para el cuerpo */
 body {
   font-family: 'Roboto', sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f7f7f7;
+  background: linear-gradient(135deg, #6e7cfa, #ff7f50); /* Gradiente para todo el fondo */
+  height: 100vh; /* Asegura que el fondo cubra toda la ventana */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Contenedor principal de la página */
@@ -13,8 +15,9 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #6e7cfa, #ff7f50);
+  height: 100%; /* Asegura que el contenedor ocupe toda la altura disponible */
+  width: 100%; /* Asegura que ocupe todo el ancho disponible */
+  background: transparent; /* Fondo transparente para que se vea el fondo del body */
 }
 
 /* Caja principal de bienvenida */
@@ -50,29 +53,30 @@ body {
 .form-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  width: 100%; /* Aseguramos que el formulario ocupe todo el ancho del contenedor */
-  align-items: center; /* Centramos todo dentro del formulario */
+  gap: 10px;
+  width: 100%;
+  align-items: center;
 }
 
 /* Contenedor del campo de nombre de usuario y el switch */
 .username-switch-container {
   display: flex;
   justify-content: space-between;
-  width: 100%; /* Aseguramos que ocupe todo el ancho disponible */
-  gap: 15px;
+  width: 100%;
+  gap: 5px;
   align-items: center;
-  margin-bottom: 20px; /* Añadimos algo de espacio debajo */
+  margin-bottom: 20px;
 }
 
 /* Estilo del campo de entrada (nombre de usuario más pequeño) */
 .username-input {
   padding: 12px;
-  width: 55%; /* Reducido al 55% para dejar más espacio al switch */
+  width: 35%;
   margin: 10px 0;
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 1rem;
+  margin-left: 20px;
 }
 
 /* Switch para elegir entre "Crear" o "Unirse" */
@@ -80,6 +84,7 @@ body {
   display: flex;
   align-items: center;
   gap: 10px;
+  margin-right: 30px;
 }
 
 .switch {
@@ -87,6 +92,7 @@ body {
   display: inline-block;
   width: 60px;
   height: 34px;
+  margin-left: 5px;
 }
 
 .switch input {
@@ -130,7 +136,7 @@ input:checked + .slider:before {
 /* Estilo para el campo de Room ID */
 .room-id-input {
   padding: 12px;
-  width: 80%; /* Mantener el campo Room ID más ancho */
+  width: 70%;
   margin: 10px 0;
   border-radius: 5px;
   border: 1px solid #ccc;
@@ -158,7 +164,6 @@ input:checked + .slider:before {
   box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
 }
 
-/* Ajuste para el botón de unirse o crear */
 .home-button:disabled {
   background-color: #ccc;
   cursor: not-allowed;

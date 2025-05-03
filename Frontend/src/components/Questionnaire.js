@@ -1,29 +1,68 @@
-// src/components/Questionnaire.js
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';  // Importar useNavigate
+import './Questionnaire.css';
 
-const Questionnaire = ({ roomId, participantId, onComplete }) => {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState({});
-  const navigate = useNavigate();  // Inicializar useNavigate
+const Questionnaire = () => {
+  const [periods, setPeriods] = useState([{ startDate: '', endDate: '' }]);
 
-  const questions = ['Do you like nature?', 'Are you interested in art?'];
+  const handleDateChange = (index, field, value) => {
+    const updatedPeriods = [...periods];
+    updatedPeriods[index][field] = value;
+    setPeriods(updatedPeriods);
+  };
 
-  const handleAnswer = (answer) => {
-    setAnswers({ ...answers, [currentQuestion]: answer });
-    setCurrentQuestion(currentQuestion + 1);
-    if (currentQuestion + 1 === questions.length) {
-      onComplete(answers);
-      // Navegar a la página de resultados después de completar el cuestionario
-      navigate('/results');  // Redirige a la página de resultados
-    }
+  const addPeriod = () => {
+    setPeriods([...periods, { startDate: '', endDate: '' }]);
+  };
+
+  const mergePeriods = () => {
+    const sortedPeriods = periods
+      .map(p => ({
+        ...p,
+        startDate: new Date(p.startDate),
+        endDate: new Date(p.endDate),
+      }))
+      .sort((a, b) => a.startDate - b.startDate);
+
+    let mergedPeriods = [];
+    sortedPeriods.forEach(period => {
+      if (mergedPeriods.length === 0 || mergedPeriods[mergedPeriods.length - 1].endDate < period.startDate) {
+        mergedPeriods.push(period);
+      } else {
+        mergedPeriods[mergedPeriods.length - 1].endDate = new Date(
+          Math.max(mergedPeriods[mergedPeriods.length - 1].endDate, period.endDate)
+        );
+      }
+    });
+
+    return mergedPeriods;
+  };
+
+  const submitAvailability = () => {
+    const mergedPeriods = mergePeriods();
+    console.log('Disponibilidad:', mergedPeriods);
   };
 
   return (
-    <div>
-      <h2>{questions[currentQuestion]}</h2>
-      <button onClick={() => handleAnswer('Yes')}>Yes</button>
-      <button onClick={() => handleAnswer('No')}>No</button>
+    <div className="questionnaire-container">
+      <h2>Selecciona tu disponibilidad para el viaje</h2>
+      <div className="periods-container">
+        {periods.map((period, index) => (
+          <div className="period" key={index}>
+            <input
+              type="date"
+              value={period.startDate}
+              onChange={(e) => handleDateChange(index, 'startDate', e.target.value)}
+            />
+            <input
+              type="date"
+              value={period.endDate}
+              onChange={(e) => handleDateChange(index, 'endDate', e.target.value)}
+            />
+          </div>
+        ))}
+      </div>
+      <button onClick={addPeriod}>Agregar periodo</button>
+      <button onClick={submitAvailability}>Enviar Disponibilidad</button>
     </div>
   );
 };

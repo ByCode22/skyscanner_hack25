@@ -1,70 +1,165 @@
-/* room.css */
+/* home.css */
 
-/* Fondo de la página */
-.room-container {
-  background: #f0f4f8;
+/* Estilo general para el cuerpo */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f7f7f7;
+}
+
+/* Contenedor principal de la página */
+.home-container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  padding: 20px;
+  background: linear-gradient(135deg, #6e7cfa, #ff7f50);
 }
 
-/* Tarjeta de la pregunta */
-.question-card {
+/* Caja principal de bienvenida */
+.welcome-box {
   background-color: white;
+  border-radius: 12px;
   padding: 30px;
   text-align: center;
-  border-radius: 15px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  width: 100%;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  width: 80%;
   max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Estilo de las preguntas */
-.question-card h2 {
-  font-size: 1.5rem;
+/* Título principal */
+.main-title {
+  font-size: 2.2rem;
+  font-weight: bold;
   color: #333;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
-/* Contenedor para los botones de respuesta */
-.button-group button {
-  background-color: #f8f9fa;
-  border: 1px solid #007bff;
-  color: #333;
-  padding: 12px 24px;
+/* Subtítulo */
+.subtitle {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+/* Contenedor del formulario */
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%; /* Aseguramos que el formulario ocupe todo el ancho del contenedor */
+  align-items: center; /* Centramos todo dentro del formulario */
+}
+
+/* Contenedor del campo de nombre de usuario y el switch */
+.username-switch-container {
+  display: flex;
+  justify-content: space-between;
+  width: 100%; /* Aseguramos que ocupe todo el ancho disponible */
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px; /* Añadimos algo de espacio debajo */
+}
+
+/* Estilo del campo de entrada (nombre de usuario más pequeño) */
+.username-input {
+  padding: 12px;
+  width: 55%; /* Reducido al 55% para dejar más espacio al switch */
+  margin: 10px 0;
   border-radius: 5px;
-  margin: 10px;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  width: 150px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
 }
 
-.button-group button.active {
+/* Switch para elegir entre "Crear" o "Unirse" */
+.switch-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  border-radius: 50%;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: 0.4s;
+}
+
+input:checked + .slider {
+  background-color: #28a745;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+/* Estilo para el campo de Room ID */
+.room-id-input {
+  padding: 12px;
+  width: 80%; /* Mantener el campo Room ID más ancho */
+  margin: 10px 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+/* Estilos del botón de acción */
+.home-button {
+  text-decoration: none;
+  display: inline-block;
   background-color: #007bff;
   color: white;
-}
-
-.button-group button:hover {
-  background-color: #0056b3;
-  transform: scale(1.05);
-}
-
-/* Botón "Next" */
-.next-button {
-  background-color: #28a745;
-  color: white;
+  font-size: 1.2rem;
   padding: 12px 24px;
-  border-radius: 5px;
-  border: none;
-  font-size: 1.1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  margin-top: 20px;
-  width: 200px;
+  border-radius: 25px;
+  width: 250px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.1);
 }
 
-.next-button:hover {
-  background-color: #218838;
-  transform: scale(1.05);
+.home-button:hover {
+  transform: translateY(-4px);
+  background-color: #0056b3;
+  box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
+}
+
+/* Ajuste para el botón de unirse o crear */
+.home-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
 }
