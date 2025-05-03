@@ -1,6 +1,8 @@
 # app/main.py
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Query, WebSocket, WebSocketDisconnect
+from typing import List, Tuple
+from app.skyscannerAPI.AirportDatabase import AirportDatabase 
 from app.manager.room_manager import create_room, add_guest_to_room, remove_guest, delete_room
 from app.manager.question_manager import initialize_questions, handle_answer
 from app.manager.recommendation import handle_recommendation_response
@@ -9,6 +11,7 @@ from app.models.room_state import rooms, questions, recommendations
 from app.utils.broadcast import broadcast_to_room
 
 app = FastAPI()
+airport_db = AirportDatabase()
 
 @app.websocket("/ws/create")
 async def host_endpoint(websocket: WebSocket):
@@ -82,4 +85,12 @@ async def guest_endpoint(websocket: WebSocket):
 
     except WebSocketDisconnect:
         remove_guest(websocket)
+        
+@app.get("/search-airports", response_model=List[Tuple[str, str]])
+def search_airports(name: str = Query(..., description="Full or partial airport name")):
+    """
+    Search for airports whose name contains the given string.
+    Returns a list of (airport_name, iata_code) pairs, max 10 results.
+    """
+    return airport_db.search_airports_by_keyword(name)
 

@@ -39,11 +39,6 @@ def generate_start_questions():
         "question": "What are your available travel dates?",
         "options": None
     }
-
-    yield {
-        "question": "How much could you invest for the flight?",
-        "options": None
-    }
     
     yield {
         "question": "What type of landscape do you prefer?",

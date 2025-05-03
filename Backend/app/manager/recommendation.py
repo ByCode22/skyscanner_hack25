@@ -1,10 +1,15 @@
 # manager/recommendation.py
 
+import re
 from fastapi import WebSocket
 from collections import Counter
 from app.models.room_state import rooms, questions, recommendations
 from app.manager.question_generator import generate_question
 from app.gemini.geminiAI import obtener_respuesta
+
+def extract_iata(full_name: str) -> str | None:
+    match = re.search(r"\((\w{3})\)", full_name)
+    return match.group(1) if match else None
 
 async def trigger_recommendation(room_code: str):
     """Generate and send a recommendation list to all participants."""
@@ -13,9 +18,6 @@ async def trigger_recommendation(room_code: str):
 
     history = questions[room_code]["history"]
     items = obtener_respuesta(history, False)
-    #check si existe la ciudad en la base de datos.
-    #en caso de que exista extraer la entityId de la ciudad correspondiente.
-    #escoger las tres primeras validas.
     total = 1 + len(rooms[room_code]["guests"])
 
     recommendations[room_code] = {
@@ -49,7 +51,8 @@ async def handle_recommendation_response(websocket: WebSocket, room_code: str, a
                 for ws in all_ws:
                     await ws.send_json({
                         "type": "final_decision",
-                        "selected": recommendations[room_code]["items"]["options"][item]
+                        "selected": recommendations[room_code]["items"]["options"][item],
+                        "iata": extract_iata(recommendations[room_code]["items"]["options"][item])
                     })
                 return
         entry = questions.get(room_code)
