@@ -14,21 +14,21 @@ def generate_room_code(length: int = 6) -> str:
             return code
 
 
-def create_room(websocket: WebSocket) -> str:
+def create_room(websocket: WebSocket, name: str, iata: str, price: int) -> str:
     """Register a new room with the host websocket and return the room code."""
     room_code = generate_room_code()
     rooms[room_code] = {
-        "host": websocket,
+        "host": [websocket, name, iata, price],
         "guests": []
     }
     return room_code
 
 
-def add_guest_to_room(room_code: str, websocket: WebSocket) -> bool:
+def add_guest_to_room(room_code: str, websocket: WebSocket, name: str, iata: str, price: int) -> bool:
     """Add a guest websocket to an existing room. Returns False if room doesn't exist."""
     if room_code not in rooms:
         return False
-    rooms[room_code]["guests"].append(websocket)
+    rooms[room_code]["guests"].append([websocket, name, iata, price])
     return True
 
 

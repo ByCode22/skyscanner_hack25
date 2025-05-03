@@ -1,7 +1,7 @@
 import pandas as pd
 
 class AirportDatabase:
-    def __init__(self, csv_path: str = "Backend/app/data/airports_database.csv"):
+    def __init__(self, csv_path: str = "app/data/airports_database.csv"):
         self.df = self._load_airports_dataframe(csv_path)
 
     def _load_airports_dataframe(self, csv_path: str) -> pd.DataFrame:

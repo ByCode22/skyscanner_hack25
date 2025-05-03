@@ -7,4 +7,4 @@ def get_all_participants(room_code: str):
 
 async def broadcast_to_room(room_code: str, message: dict):
     for ws in get_all_participants(room_code):
-        await ws.send_json(message)
+        await ws[0].send_json(message)
