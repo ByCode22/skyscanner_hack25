@@ -8,6 +8,10 @@ class GuestSocketService {
 	  this.onErrorCallback = null;
 	  this.onOpenCallback = null;
 	  this.onReadyCallback = null;
+	  this.onQuestionCallback = null;
+	  this.onRecommendationCallback = null;
+	  this.onFinalDecisionCallback = null;
+
 	}
   
 	connect(roomCode, guestData) {
@@ -53,6 +57,18 @@ class GuestSocketService {
 	onReady(callback) {
 		this.onReadyCallback = callback;
 	  }
+
+	onQuestion(callback) {
+		this.onQuestionCallback = callback;
+	}
+
+	onRecommendation(callback) {
+		this.onRecommendationCallback = callback;
+	}
+	
+	onFinalDecision(callback) {
+		this.onFinalDecisionCallback = callback;
+	}
   
 	close() {
 	  if (this.socket) {
@@ -103,6 +119,25 @@ class GuestSocketService {
 			console.log("✅ Received 'ready' from server");
 			if (this.onReadyCallback) {
 				this.onReadyCallback();
+			}
+			break;
+		case "question":
+			console.log("📩 Received question:", data.question);
+			if (this.onQuestionCallback) {
+				this.onQuestionCallback(data);
+			}
+			break;
+		case "recommendation":
+			console.log("📦 Received recommendation:", data.items);
+			if (this.onRecommendationCallback) {
+				this.onRecommendationCallback(data.items);
+			}
+			break;
+			
+		case "final_decision":
+			console.log("✅ Final decision received:", data);
+			if (this.onFinalDecisionCallback) {
+				this.onFinalDecisionCallback(data);
 			}
 			break;
 		default:
