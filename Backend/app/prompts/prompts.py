@@ -6,7 +6,7 @@ def generar_prompt(fechas, paisaje, presupuesto, actividades):
     Args:
     - fechas (str): El rango de fechas disponibles (ej. "2025-06-01 to 2025-06-10").
     - paisaje (str): El tipo de paisaje preferido (ej. "playa", "montaña").
-    - presupuesto (str): El presupuesto disponible (ej. "3000 EUR").
+    - presupuesto (str): El presupuesto disponible en € (ej. "3000").
     - actividades (list): Lista de actividades preferidas (ej. ["senderismo", "buceo", "museos"]).
     
     Returns:

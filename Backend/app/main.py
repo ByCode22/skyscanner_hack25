@@ -43,7 +43,7 @@ def interactuar_con_usuario():
     paisaje = input("¿Qué tipo de paisaje prefieres? (montaña, playa, ciudad, etc.): ")
     
     # Solicitar presupuesto
-    presupuesto = input("¿Cuál es tu presupuesto para el viaje? (ej. 1000 EUR, 3000 USD): ")
+    presupuesto = input("¿Cuál es tu presupuesto en € para el viaje? (ej. 1000): ")
     
     # Solicitar actividades preferidas
     actividades = input("¿Qué actividades te gustaría realizar durante el viaje? (separa por comas): ").split(",")

@@ -6,28 +6,23 @@ from Backend.app.gemini.config import API_KEY
 genai.configure(api_key=API_KEY)
 
 def obtener_preguntas(fechas, paisaje, presupuesto, actividades):
+    # Crear un prompt que explique que las respuestas son el resultado del consenso grupal
+    prompt = f"""
+    El siguiente es el resultado de las respuestas de un grupo de personas (promedio o la más votada por el grupo):
+
+    Fechas disponibles: {fechas}
+    Paisaje preferido: {paisaje}
+    Presupuesto disponible: {presupuesto}
+    Actividades preferidas: {', '.join(actividades)}
+
+    Por favor, utiliza esta información para generar preguntas que ayuden a elegir un destino para su viaje.
     """
-    Obtiene las preguntas generadas por la API de Gemini basándose en las preferencias del usuario.
-    
-    Args:
-    - fechas (str): El rango de fechas disponibles (ej. "2025-06-01 to 2025-06-10").
-    - paisaje (str): El tipo de paisaje preferido (ej. "playa").
-    - presupuesto (str): El presupuesto disponible (ej. "3000 EUR").
-    - actividades (list): Lista de actividades preferidas (ej. ["senderismo", "buceo", "museos"]).
-    
-    Returns:
-    - list: Lista de preguntas generadas por Gemini.
-    """
-    
-    # Generar el prompt usando los datos proporcionados
-    prompt = generar_prompt(fechas, paisaje, presupuesto, actividades)
     
     # Llamada a la API de Gemini
-    respuesta = genai.generate_text(prompt=prompt, model='gemini-2.0-flash-lite')
-    
+    respuesta = genai.generate_text(prompt=prompt)
+
     # Verificar si la respuesta contiene preguntas
     if respuesta:
-        # Aquí asumimos que las preguntas están en la respuesta de Gemini, y las dividimos por línea
         preguntas = respuesta.text.strip().split("\n")
         return preguntas
     else:
