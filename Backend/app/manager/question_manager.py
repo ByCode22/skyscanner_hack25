@@ -116,6 +116,17 @@ async def handle_answer(websocket: WebSocket, room_code: str, data: dict):
                 "answer": period_str
             })
 
+        elif q_index == 1:
+            selected_prices = entry["responses"]
+
+            if (selected_prices == None):
+                await broadcast_to_room(room_code, {
+                    "type": "error",
+                    "message": "no has introducido nada"
+                })
+                entry["responses"] = []
+                return
+
         else:
             indices = [r["index"] for r in entry["responses"]]
             selected_index = Counter(indices).most_common(1)[0][0]

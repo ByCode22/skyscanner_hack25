@@ -41,7 +41,14 @@ def generate_start_questions():
     }
 
     yield {
+        "question": "How much could you invest for the flight?",
+        "options": None
+    }
+    
+    yield {
         "question": "What type of landscape do you prefer?",
         "options": ["Mountains", "Beach", "City", "Countryside"]
     }
+
+    
 
