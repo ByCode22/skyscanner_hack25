@@ -78,6 +78,10 @@ const Questionnaire = () => {
     setErrorMessage(""); 
   };
 
+  const removePeriod = (index) => {
+    setPeriods(periods.filter((_, i) => i !== index));
+  };
+
   const addPeriod = () => setPeriods([...periods, { startDate: '', endDate: '' }]);
   const removePeriod = (index) => setPeriods(periods.filter((_, i) => i !== index));
 
@@ -130,8 +134,7 @@ const Questionnaire = () => {
         <div>
           <h2>How much are you willing to spend on your flight?</h2>
           <div className="price-range-options">
-            {[
-              { label: "$0 – $100", range: "$0 – $100", notes: "Ultra budget - Deals, low-cost carriers" },
+            {[{ label: "$0 – $100", range: "$0 – $100", notes: "Ultra budget - Deals, low-cost carriers" },
               { label: "$100 – $250", range: "$100 – $250", notes: "Budget - Common short-haul fares" },
               { label: "$250 – $500", range: "$250 – $500", notes: "Mid-range - Standard regional/international" },
               { label: "$500 – $1000", range: "$500 – $1000", notes: "Higher-end - Long-haul or business fares" },
