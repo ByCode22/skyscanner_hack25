@@ -10,7 +10,7 @@ const Header = () => {
         <ul>
           <li><Link to="/">Home</Link></li> {/* Enlace a la página de inicio */}
           <li><Link to="/room">Room</Link></li> {/* Enlace a la página de la sala */}
-          <li><Link to="/results">Results</Link></li> {/* Enlace a la página de resultados */}
+          <li><Link to="/resultspage">Results</Link></li> {/* Enlace a la página de resultados */}
         </ul>
       </nav>
     </header>

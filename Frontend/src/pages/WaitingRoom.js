@@ -1,41 +1,54 @@
+// src/components/WaitingRoom.js
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
 import './waitingRoom.css';
 
 const WaitingRoom = ({ creator, roomId }) => {
-  const [participants, setParticipants] = useState([creator]);  // Comienza con el creador
+  const [participants, setParticipants] = useState([creator]);
   const [canStart, setCanStart] = useState(false);
+  const navigate = useNavigate(); // Hook para navegación
 
   // Simulación de que alguien se une a la sala (esto es solo para demostración)
   useEffect(() => {
-    // Este efecto simula que un participante se une después de 2 segundos
     setTimeout(() => {
-      setParticipants(prev => [...prev, 'Carlos Sánchez']); // Simula que un participante se unió
+      setParticipants(prev => [...prev, 'Carlos Sánchez']);
     }, 2000);
   }, []);
 
   useEffect(() => {
-    // Solo el creador puede iniciar el quiz, y solo si está en la lista de participantes
     if (participants[0] === creator) {
       setCanStart(true);
     } else {
       setCanStart(false);
     }
-  }, [participants, creator]); // Recalcula si se puede iniciar cuando la lista cambia
+  }, [participants, creator]);
 
   const startQuiz = () => {
     if (creator === participants[0]) {
       console.log("Iniciando el quiz...");
-      // Aquí iría la lógica para redirigir al quiz
+      navigate(`/quiz/${roomId}`);
     } else {
-      alert("Solo el creador puede iniciar la partida.");
+      alert("Solo el creador puede iniciar el quiz.");
     }
+  };
+
+  // Función para ir atrás
+  const goBack = () => {
+    navigate(-1); // Navega hacia la página anterior
   };
 
   return (
     <div className="waiting-room-container">
+      {/* Botón de flecha para ir atrás */}
+      <div className="back-button" onClick={goBack}>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 18l-6-6 6-6" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </div>
+
       <div className="room-header">
-        <h2>Bienvenido a la sala: {roomId}</h2>
-        <p><strong>Participantes:</strong> {participants.length}</p>
+        <h2>Welcome to the room:{roomId}</h2>
+        <p><strong>Participants:</strong> {participants.length}</p>
       </div>
 
       <div className="participants-list">
@@ -50,7 +63,7 @@ const WaitingRoom = ({ creator, roomId }) => {
         <button 
           onClick={startQuiz} 
           className="start-btn" 
-          disabled={!canStart} // El botón solo se habilita si el creador es el primero
+          disabled={!canStart}
         >
           {canStart ? 'Iniciar Quiz' : 'Esperando más participantes...'}
         </button>

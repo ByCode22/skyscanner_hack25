@@ -6,45 +6,104 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100vh; /* Asegura que ocupe el 100% de la altura de la pantalla */
     padding: 20px;
+    position: relative;
   }
   
-  /* Caja principal de resultados */
+  /* Contenedor principal de los resultados */
   .results-box {
     background-color: white;
     border-radius: 12px;
-    padding: 40px;
+    padding: 20px;
     text-align: center;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
     width: 100%;
-    max-width: 500px;
+    max-width: 600px; /* Mantener el ancho reducido */
+    height: 380px; /* Reducimos la altura para que sea más compacto */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
   }
   
   /* Título de los resultados */
   .results-box h2 {
-    font-size: 2rem;
+    font-size: 1.6rem;
     color: #333;
     margin-bottom: 20px;
   }
   
-  /* Lista de destinos recomendados */
-  .results-box ul {
-    list-style-type: none;
-    padding: 0;
-    font-size: 1.2rem;
-    color: #555;
-  }
-  
-  .results-box li {
+  /* Estilo para las tarjetas de las ciudades */
+  .destination-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px; /* Reducimos el espacio entre las tarjetas */
+    padding: 15px;
     background-color: #f0f4f8;
-    padding: 12px;
-    margin: 10px 0;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   }
   
-  .results-box li:hover {
+  .destination-card:hover {
     background-color: #e0e0e0;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Estilo para la imagen de la ciudad */
+  .destination-image img {
+    width: 80px; /* Se reduce el tamaño de la imagen */
+    height: 80px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+  
+  /* Texto de la ciudad */
+  .destination-text {
+    flex: 1;
+    margin-left: 15px;
+    text-align: left;
+  }
+  
+  .destination-text h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin-bottom: 5px;
+  }
+  
+  .destination-text .description {
+    font-size: 0.9rem;
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  /* Flecha para regresar */
+  .back-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+    z-index: 1;
+  }
+  
+  .back-button svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: #007bff;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: all 0.3s ease;
+  }
+  
+  .back-button:hover svg {
+    stroke: #0056b3;
+  }
+  
+  * {
+    user-select: none;
   }
   

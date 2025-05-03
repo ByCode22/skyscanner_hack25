@@ -1,0 +1,195 @@
+/* Questionnaire.css */
+
+/* Estilo general del contenedor del cuestionario */
+.questionnaire-container {
+    position: relative;
+    padding: 20px;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.questionnaire-container h2 {
+    font-size: 1.6rem;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Estilo para los periodos */
+.periods-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.period {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 10px;
+    position: relative;
+}
+
+.date-input {
+    padding: 8px;
+    width: calc(40%);
+    font-size: 1rem;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.date-input:focus {
+    outline: none;
+    border-color: #4e92ff; /* Azul más suave */
+}
+
+/* Cruz "X" flotante a la derecha fuera del área de las fechas */
+.remove-btn {
+    background-color: #fff;
+    border: none;
+    font-size: 1.5rem;
+    color: red;
+    cursor: pointer;
+    position: absolute;
+    right: 5px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.remove-btn:hover {
+    background-color: #f2f2f2;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.remove-btn:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Botón "+" para agregar un nuevo periodo */
+.add-period-btn {
+    background-color: #4e92ff; /* Azul más suave */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.1);
+    transition: all 0.3s ease;
+    margin-top: 10px;
+    opacity: 0.9;
+}
+
+.add-period-btn:hover {
+    background-color: #3a7bd5; /* Azul más oscuro, pero suave */
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.2);
+}
+
+/* Botones para avanzar entre preguntas */
+.next-question-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+}
+
+.next-question-btn {
+    background-color: #4e92ff; /* Azul más suave */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.next-question-btn:hover {
+    background-color: #3a7bd5; /* Azul más oscuro, pero suave */
+}
+
+.next-question-btn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.add-period-btn,
+.remove-btn,
+.next-question-btn {
+    user-select: none;
+}
+
+/* Añadimos el estilo para la flecha */
+.back-button {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.back-button svg {
+    width: 24px;
+    height: 24px;
+    fill: none;
+    stroke: #4e92ff; /* Azul más suave */
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover svg {
+    stroke: #3a7bd5; /* Azul más oscuro, pero suave */
+}
+
+/* Estilos para las opciones de rango de precio */
+.price-range-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.price-option {
+    padding: 15px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.price-option:hover {
+    background-color: #f0f0f0;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.price-option.selected {
+    background-color: #97b3e0; /* Azul más suave */
+    color: white;
+}
+
+.price-label {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.price-notes {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+* { 
+    user-select: none; 
+}
