@@ -1,38 +1,96 @@
+/* src/App.css */
+
+/* Estilos generales de la aplicación */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f7f6;
+  display: flex;
+  justify-content: center; /* Centrado horizontal */
+  align-items: center; /* Centrado vertical */
+  height: 100vh;
+}
+
+/* Estilo para el contenedor principal de la app */
 .App {
+  width: 100%;
+  max-width: 800px;
+  background-color: #ffffff; /* Fondo blanco */
+  padding: 40px;
+  border-radius: 10px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1); /* Sombra suave */
   text-align: center;
 }
 
+/* Cabecera de la app */
+.App-header {
+  background-color: #007bff;
+  color: white;
+  padding: 30px 0;
+  border-radius: 10px 10px 0 0;
+  margin-bottom: 20px;
+}
+
+.App-header h1 {
+  font-size: 2.8rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+/* Logo de la app */
 .App-logo {
   height: 40vmin;
   pointer-events: none;
+  margin-bottom: 20px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
+/* Animación del logo */
 @keyframes App-logo-spin {
   from {
-    transform: rotate(0deg);
+      transform: rotate(0deg);
   }
   to {
-    transform: rotate(360deg);
+      transform: rotate(360deg);
   }
+}
+
+/* Estilo de botones */
+button {
+  background-color: #007bff;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.3s, transform 0.3s;
+  box-shadow: 0 4px 6px rgba(0, 123, 255, 0.1);
+  margin-top: 20px;
+}
+
+button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05); /* Efecto de zoom */
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Estilo para los inputs */
+.input-container input {
+  padding: 12px;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  transition: border-color 0.3s ease;
+}
+
+.input-container input:focus {
+  border-color: #007bff;
+  outline: none;
 }

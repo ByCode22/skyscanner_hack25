@@ -1,0 +1,70 @@
+/* room.css */
+
+/* Fondo de la página */
+.room-container {
+  background: #f0f4f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: 20px;
+}
+
+/* Tarjeta de la pregunta */
+.question-card {
+  background-color: white;
+  padding: 30px;
+  text-align: center;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Estilo de las preguntas */
+.question-card h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Contenedor para los botones de respuesta */
+.button-group button {
+  background-color: #f8f9fa;
+  border: 1px solid #007bff;
+  color: #333;
+  padding: 12px 24px;
+  border-radius: 5px;
+  margin: 10px;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  width: 150px;
+}
+
+.button-group button.active {
+  background-color: #007bff;
+  color: white;
+}
+
+.button-group button:hover {
+  background-color: #0056b3;
+  transform: scale(1.05);
+}
+
+/* Botón "Next" */
+.next-button {
+  background-color: #28a745;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 5px;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-top: 20px;
+  width: 200px;
+}
+
+.next-button:hover {
+  background-color: #218838;
+  transform: scale(1.05);
+}

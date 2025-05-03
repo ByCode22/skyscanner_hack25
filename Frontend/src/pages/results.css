@@ -1,0 +1,50 @@
+/* results.css */
+
+/* Fondo general de la página */
+.results-container {
+    background: #f7f7f7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    padding: 20px;
+  }
+  
+  /* Caja principal de resultados */
+  .results-box {
+    background-color: white;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  /* Título de los resultados */
+  .results-box h2 {
+    font-size: 2rem;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  /* Lista de destinos recomendados */
+  .results-box ul {
+    list-style-type: none;
+    padding: 0;
+    font-size: 1.2rem;
+    color: #555;
+  }
+  
+  .results-box li {
+    background-color: #f0f4f8;
+    padding: 12px;
+    margin: 10px 0;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  }
+  
+  .results-box li:hover {
+    background-color: #e0e0e0;
+  }
+  

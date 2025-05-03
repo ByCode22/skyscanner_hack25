@@ -1,0 +1,39 @@
+/* waitingRoom.css */
+.waiting-room-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f7f7f7;
+  }
+  
+  .waiting-room-container h1 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #333;
+  }
+  
+  .waiting-room-container p {
+    font-size: 1.2rem;
+    color: #555;
+    margin-bottom: 30px;
+  }
+  
+  .start-quiz-button {
+    background-color: #28a745;
+    color: white;
+    font-size: 1.2rem;
+    padding: 12px 24px;
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.1);
+  }
+  
+  .start-quiz-button:hover {
+    transform: translateY(-4px);
+    background-color: #218838;
+    box-shadow: 0 8px 20px rgba(0, 123, 255, 0.2);
+  }
+  
