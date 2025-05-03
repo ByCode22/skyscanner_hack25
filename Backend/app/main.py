@@ -4,58 +4,68 @@ from gemini.config import API_KEY
 # Configurar la clave de API de Gemini
 genai.configure(api_key=API_KEY)
 
-def obtener_preguntas(fechas, paisaje, presupuesto, actividades):
-    prompt = f"""
-    Las fechas disponibles son: {fechas}.
-    El tipo de paisaje preferido es: {paisaje}.
-    El presupuesto disponible es: {presupuesto}.
-    Las actividades preferidas son: {', '.join(actividades)}.
+def generar_prompt_pregunta(history):
+    history_text = "\n".join([f"- {pregunta}: {respuesta}" for pregunta, respuesta in history.items()])
 
-    Por favor, genera una serie de preguntas que puedan ayudar a los usuarios a elegir un destino para su viaje.
-    """
-    
-    # Depuración del prompt generado
-    print(f"Prompt enviado a la API: {prompt}")
-    
+    prompt = f"""
+Estás ayudando a un grupo de personas a decidir un destino de viaje en Europa occidental.
+
+Historial de preguntas ya hechas con sus respuestas más frecuentes:
+{history_text}
+
+Ahora, genera UNA nueva pregunta para seguir afinando la elección. 
+
+Reglas:
+- Debe tener 4 opciones distintas y claras.
+- No repitas preguntas anteriores.
+- La pregunta debe ser más específica que las anteriores.
+- NO sugieras destinos.
+
+⚠️ Devuelve solo un JSON con el siguiente formato (sin texto adicional):
+
+{{
+    "question": "Texto de la nueva pregunta",
+    "options": ["Opción 1", "Opción 2", "Opción 3", "Opción 4"]
+}}
+"""
+    return prompt
+
+
+def generar_prompt_sugerencia(history):
+    history_text = "\n".join([f"- {pregunta}: {respuesta}" for pregunta, respuesta in history.items()])
+
+    prompt = f"""
+Estás ayudando a un grupo de personas a elegir un país de Europa occidental para su viaje.
+
+Basado en sus respuestas colectivas, sugiere 3 países que podrían encajar bien con sus preferencias. La cuarta opción debe ser: "Seguir respondiendo preguntas para afinar más la elección".
+
+Historial de respuestas más votadas:
+{history_text}
+
+⚠️ Devuelve solo un JSON con el siguiente formato (sin texto adicional):
+
+{{
+    "options": ["País 1", "País 2", "País 3", "Seguir respondiendo preguntas para afinar más la elección"]
+}}
+"""
+    return prompt
+
+
+def obtener_respuesta(history, contador_preguntas):
+    if contador_preguntas % 5 == 0:
+        prompt = generar_prompt_sugerencia(history)
+    else:
+        prompt = generar_prompt_pregunta(history)
+
+    print(f"Prompt enviado a la API:\n{prompt}\n")
+
     try:
-        # Llamada a la API de Gemini
-        model = genai.GenerativeModel("gemini-2.0-flash-lite")  # o "gemini-1.5-flash" si tienes acceso
+        model = genai.GenerativeModel("gemini-2.0-flash-lite")
         respuesta = model.generate_content(prompt)
-        
-        # Verificar si la respuesta contiene preguntas
         if respuesta and respuesta.text.strip():
-            preguntas = respuesta.text.strip().split("\n")
-            return preguntas
+            return [respuesta.text.strip()]
         else:
-            return ["Lo siento, no pude generar preguntas en este momento."]
+            return ["Lo siento, no pude generar una pregunta en este momento."]
     except Exception as e:
         print(f"Error al generar preguntas: {e}")
         return ["Lo siento, hubo un error al generar las preguntas."]
-
-# Función para interactuar con el usuario
-def interactuar_con_usuario():
-    print("¡Bienvenido al generador de preguntas para viajes!")
-    
-    # Solicitar fechas disponibles
-    fechas = input("¿Cuáles son las fechas disponibles para el viaje? (ej. 2025-06-01 to 2025-06-10): ")
-    
-    # Solicitar tipo de paisaje preferido
-    paisaje = input("¿Qué tipo de paisaje prefieres? (montaña, playa, ciudad, etc.): ")
-    
-    # Solicitar presupuesto
-    presupuesto = input("¿Cuál es tu presupuesto para el viaje? (ej. 1000 EUR, 3000 USD): ")
-    
-    # Solicitar actividades preferidas
-    actividades = input("¿Qué actividades te gustaría realizar durante el viaje? (separa por comas): ").split(",")
-    
-    # Llamar a la función para obtener preguntas de la API de Gemini
-    preguntas = obtener_preguntas(fechas, paisaje, presupuesto, actividades)
-    
-    # Mostrar las preguntas generadas
-    print("\nPreguntas generadas:")
-    for pregunta in preguntas:
-        print(f"- {pregunta}")
-
-# Iniciar la interacción con el usuario
-if __name__ == "__main__":
-    interactuar_con_usuario()
