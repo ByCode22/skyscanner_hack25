@@ -85,5 +85,3 @@ def extract_json_from_string(text: str):
     match = re.search(r"```(?:json)?\s*(.*?)\s*```", text, re.DOTALL)
     content = match.group(1) if match else text.strip()
     return json.loads(content)
-
-print(obtener_respuesta([], False))

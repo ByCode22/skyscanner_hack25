@@ -1,14 +1,28 @@
-// src/components/Questionnaire.js
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './questionnaire.css';
+import hostSocketService from '../services/HostSocketService';
 
 const Questionnaire = () => {
   const [periods, setPeriods] = useState([{ startDate: '', endDate: '' }]);
-  const [selectedPriceRange, setSelectedPriceRange] = useState(""); // Estado para el rango de precios
-  const [currentQuestion, setCurrentQuestion] = useState(0); // Control de la pregunta actual
+  const [selectedPriceRange, setSelectedPriceRange] = useState("");
+  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [errorMessage, setErrorMessage] = useState(""); 
+
   const navigate = useNavigate(); 
+  const location = useLocation();
+  const isHost = location.state?.isHost;
+
+  useEffect(() => {
+    if (isHost) {
+      const timer = setTimeout(() => {
+        hostSocketService.socket?.send(JSON.stringify({ type: "start" }));
+        console.log("📨 Sent 'start' message to server (host)");
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isHost]);
 
   // Función para ir atrás con confirmación
   const goBack = () => {
@@ -75,7 +89,7 @@ const Questionnaire = () => {
     for (let period of periods) {
       const startDate = new Date(period.startDate);
       const endDate = new Date(period.endDate);
-      if (startDate >= endDate) {
+      if (startDate > endDate) {
         return false;
       }
     }

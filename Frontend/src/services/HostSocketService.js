@@ -77,6 +77,15 @@ class HostSocketService {
     this.socket.send(JSON.stringify(message));
   }
 
+  sendReady() {
+    if (!this.socket || this.socket.readyState !== WebSocket.OPEN) {
+      console.warn("WebSocket is not connected.");
+      return;
+    }
+
+    this.socket.send(JSON.stringify({ type: "ready" }));
+  }
+
   onRoomCreated(callback) {
     this.onRoomCreatedCallback = callback;
   }

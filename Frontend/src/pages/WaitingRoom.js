@@ -30,6 +30,16 @@ const WaitingRoom = () => {
       }
     });
 
+    guestSocketService.onReady(() => {
+      navigate(`/quiz/${roomId}`, {
+        state: {
+          isHost: false,
+          username: creator,
+          roomCode
+        }
+      });
+    });
+
     return () => {
       console.log("👋 WaitingRoom unmounted");
     };
@@ -42,7 +52,14 @@ const WaitingRoom = () => {
 
   const startQuiz = () => {
     if (canStart) {
-      navigate(`/quiz/${roomId}`);
+      hostSocketService.sendReady();
+      navigate(`/quiz/${roomId}`, {
+        state: {
+          isHost: true,
+          roomCode: roomId,
+          username: creator,
+        },
+      });
     } else {
       alert("Only the host can start the quiz.");
     }

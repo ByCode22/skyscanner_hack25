@@ -54,7 +54,10 @@ async def host_endpoint(websocket: WebSocket):
             data = await websocket.receive_json()
             msg_type = data.get("type")
 
-            if msg_type == "start":
+            if msg_type == "ready":
+                await broadcast_to_room(room_code, {"type": "ready"})
+
+            elif msg_type == "start":
                 first_question = await initialize_questions(room_code)
 
                 await broadcast_to_room(room_code, {
@@ -109,7 +112,6 @@ async def guest_endpoint(websocket: WebSocket, room_code: str):
             await websocket.close()
             return
 
-        # 4. 게스트 등록
         if not add_guest_to_room(room_code, websocket, name, iata, price):
             await websocket.send_json({
                 "type": "error",
