@@ -8,8 +8,7 @@ from app.models.room_state import rooms, questions
 from app.manager.question_generator import generate_question, generate_start_questions
 from app.utils.broadcast import broadcast_to_room
 from app.manager.recommendation import trigger_recommendation
-
-
+from app.gemini.geminiAI import obtener_respuesta
 
 async def initialize_questions(room_code: str):
     """Start the main question session with the first start question."""
@@ -127,7 +126,7 @@ async def handle_answer(websocket: WebSocket, room_code: str, data: dict):
                     "type": "error",
                     "message": "no queremos nada"
                 })
-                next_question = generate_question(entry["history"])
+                next_question = obtener_respuesta(entry["history"], True)
                 entry["current_question"] = next_question["question"]
                 entry["current_options"] = next_question["options"]
                 entry["responses"] = []
@@ -154,16 +153,14 @@ async def handle_answer(websocket: WebSocket, room_code: str, data: dict):
         entry["responses"] = []
         history_len = len(entry["history"])
 
-        print(entry)
-
-        if history_len == 5 or (history_len > 5 and (history_len - 5) % 3 == 0):
+        if history_len == 2 or (history_len > 2 and (history_len - 2) % 1 == 0):
             await trigger_recommendation(room_code)
             return
 
         if history_len < 2:
             next_question = next(questions[room_code]["question_generator"])
         else:
-            next_question = generate_question(entry["history"])
+            next_question = obtener_respuesta(entry["history"], True)
         entry["current_question"] = next_question["question"]
         entry["current_options"] = next_question["options"]
         await broadcast_to_room(room_code, {

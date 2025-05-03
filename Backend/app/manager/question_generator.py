@@ -2,8 +2,6 @@
 
 import random
 
-import random
-
 def generate_question(history: list[dict]) -> dict:
     """Return a dynamically generated question with options."""
     pool = [

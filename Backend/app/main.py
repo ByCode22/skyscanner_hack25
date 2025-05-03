@@ -35,7 +35,7 @@ async def host_endpoint(websocket: WebSocket):
                 await handle_answer(websocket, room_code, data.get("answer"))
 
             elif msg_type == "select_recommendation":
-                await handle_recommendation_response(websocket, room_code, data.get("selected"))
+                await handle_recommendation_response(websocket, room_code, data.get("answer"))
 
             elif msg_type == "calculate_transport":
                 await calculate_final_transport(room_code)
@@ -75,7 +75,7 @@ async def guest_endpoint(websocket: WebSocket):
                 await handle_answer(websocket, room_code, data.get("answer"))
 
             elif msg_type == "select_recommendation":
-                await handle_recommendation_response(websocket, room_code, data.get("selected"))
+                await handle_recommendation_response(websocket, room_code, data.get("answer"))
 
             elif msg_type == "calculate_transport":
                 await calculate_final_transport(room_code)

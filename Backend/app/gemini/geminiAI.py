@@ -1,35 +1,40 @@
 import google.generativeai as genai
-from app.gemini.config import API_KEY
+import json
+import re
+from dotenv import load_dotenv
+import os
 
-# Configurar la clave de API de Gemini
-genai.configure(api_key=API_KEY)
+load_dotenv()
+
+# Configure Gemini API key
+genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
 
 def generar_prompt_pregunta(history):
     if len(history) > 0:
-        history_text = "\n".join([f"- {pregunta}: {respuesta}" for pregunta, respuesta in history.items()])
+        history_text = json.dumps(history)
     else:
-        history_text = "Aún no hay respuestas"
+        history_text = "There are no responses yet"
 
     prompt = f"""
-Estás ayudando a un grupo de personas a decidir un destino de viaje en Europa occidental.
+You are helping a group of people decide on a travel destination in Western Europe.
 
-Historial de preguntas ya hechas con sus respuestas más frecuentes:
+History of previously asked questions with their most frequent answers:
 {history_text}
 
-Ahora, genera UNA nueva pregunta para seguir afinando la elección. 
+Now, generate ONE new question to further refine the choice.
 
-Reglas:
-- Debe tener 4 opciones distintas y claras.
-- No repitas preguntas anteriores.
-- La pregunta debe ser más específica que las anteriores.
-- NO sugieras destinos.
-- Las opciones máximo tres palabras
+Rules:
+- It must have 4 distinct and clear options.
+- Do not repeat previous questions.
+- The question must be more specific than the previous ones.
+- DO NOT suggest destinations.
+- The options must be no more than three words each.
 
-⚠️ Devuelve solo un JSON con el siguiente formato (sin texto adicional):
+⚠️ Return ONLY a JSON object without any Markdown formatting (no extra text):
 
 {{
-    "question": "Texto de la nueva pregunta",
-    "options": ["Ninguna", "Opción 1", "Opción 2", "Opción 3", "Opción 4"]
+    "question": "Text of the new question",
+    "options": ["None", "Option 1", "Option 2", "Option 3", "Option 4"]
 }}
 """
     return prompt
@@ -37,45 +42,46 @@ Reglas:
 
 def generar_prompt_sugerencia(history):
     if len(history) > 0:
-        history_text = "\n".join([f"- {pregunta}: {respuesta}" for pregunta, respuesta in history.items()])
+        history_text = json.dumps(history)
     else:
-        history_text = "Aún no hay respuestas"
+        history_text = "There are no responses yet"
 
     prompt = f"""
-Estás ayudando a un grupo de personas a elegir un país de Europa occidental para su viaje.
+You are helping a group of people choose an airport anywhere in the world in 'en-GB' for their trip.
 
-Basado en sus respuestas colectivas, sugiere 3 países que podrían encajar bien con sus preferencias. La cuarta opción debe ser: "Seguir respondiendo preguntas para afinar más la elección".
+Based on their collective answers, suggest 5 countries that could match their preferences well. The fourth option must be: "Keep answering questions to refine further".
 
-Historial de respuestas más votadas:
+History of most voted answers:
 {history_text}
 
-⚠️ Devuelve solo un JSON con el siguiente formato (sin texto adicional):
+⚠️ Return ONLY a JSON object without any Markdown formatting (no extra text):
 
 {{
-    "options": ["País 1", "País 2", "País 3", "Seguir respondiendo preguntas para afinar más la elección"]
+    "options": ["City 1", "City 2", "City 3", "City 4", "City 5", "Keep answering questions to refine further"]
 }}
 """
     return prompt
 
 
-def obtener_respuesta(history, contador_preguntas):
-    if contador_preguntas % 5 == 0:
-        prompt = generar_prompt_sugerencia(history)
-    else:
+def obtener_respuesta(history: list, pregunta: bool):
+    if pregunta:
         prompt = generar_prompt_pregunta(history)
-
-    print(f"Prompt enviado a la API:\n{prompt}\n")
+    else:
+        prompt = generar_prompt_sugerencia(history)
 
     try:
         model = genai.GenerativeModel("gemini-2.0-flash-lite")
         respuesta = model.generate_content(prompt)
         if respuesta:
-            return respuesta.text
+            return extract_json_from_string(respuesta.text)
         else:
-            return "Lo siento, no pude generar una pregunta en este momento."
+            return "Sorry, I couldn't generate a question at this moment."
     except Exception as e:
-        print(f"Error al generar preguntas: {e}")
-        return "Lo siento, hubo un error al generar las preguntas."
-
-if __name__ == "__main__":
-    print(obtener_respuesta([], 1))
+        print(f"Error generating question: {e}")
+        return "Sorry, there was an error generating the questions."
+    
+    
+def extract_json_from_string(text: str):
+    match = re.search(r"```(?:json)?\s*(.*?)\s*```", text, re.DOTALL)
+    content = match.group(1) if match else text.strip()
+    return json.loads(content)
