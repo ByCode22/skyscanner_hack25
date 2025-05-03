@@ -34,10 +34,11 @@ def intersect_periods(raw_period_data: List) -> Optional[DatePeriod]:
 
     periods = [
         (
-            stringdate_to_datetime(period[1]['start_date']),
-            stringdate_to_datetime(period[1]['end_date'])
+            stringdate_to_datetime(period["start_date"]),
+            stringdate_to_datetime(period["end_date"])
         )
-        for period in raw_period_data
+        for period_list in raw_period_data
+        for period in period_list
     ]
 
     max_start = max(period[0] for period in periods)
