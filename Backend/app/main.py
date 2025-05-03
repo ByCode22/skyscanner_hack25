@@ -21,6 +21,7 @@ async def host_endpoint(websocket: WebSocket):
     msg_type = data.get("type")
 
     if msg_type != "create":
+        await websocket.close()
         return
     
     name = data.get("name")
@@ -28,11 +29,10 @@ async def host_endpoint(websocket: WebSocket):
     price = data.get("price")
 
     if not name or not iata or not price:
+        await websocket.close()
         return
 
     room_code = create_room(websocket, name, iata, price)
-
-    print(rooms)
 
     await websocket.send_json({"type": "room_created", "room_code": room_code, "host_name": name})
 
@@ -64,26 +64,49 @@ async def host_endpoint(websocket: WebSocket):
         questions.pop(room_code, None)
         recommendations.pop(room_code, None)
 
-@app.websocket("/ws/join")
-async def guest_endpoint(websocket: WebSocket):
+@app.websocket("/ws/join/{room_code}")
+async def guest_endpoint(websocket: WebSocket, room_code: str):
     await websocket.accept()
-    try:
-        join_data = await websocket.receive_json()
-        msg_type = join_data.get("type")
 
+    if room_code not in rooms:
+        await websocket.send_json({
+            "type": "error",
+            "message": "Invalid room code"
+        })
+        await websocket.close()
+        return
+
+    await websocket.send_json({
+        "type": "info",
+        "message": f"Found a room with room code {room_code}"
+    })
+
+    try:
+        guest_data = await websocket.receive_json()
+        
+        msg_type = guest_data.get("type")
         if msg_type != "join":
+            await websocket.close()
             return
         
-        room_code = join_data.get("room_code")
-        name = join_data.get("name")
-        iata = join_data.get("iata")
-        price = join_data.get("price")
+        name = guest_data.get("name")
+        iata = guest_data.get("iata")
+        price = guest_data.get("price")
 
-        if not room_code or not name or not iata or not price:
+        if not name or not iata or not price:
+            await websocket.send_json({
+                "type": "error",
+                "message": "Missing guest information"
+            })
+            await websocket.close()
             return
 
+        # 4. 게스트 등록
         if not add_guest_to_room(room_code, websocket, name, iata, price):
-            await websocket.send_json({"type": "error", "message": "Invalid room code"})
+            await websocket.send_json({
+                "type": "error",
+                "message": "Could not join room"
+            })
             await websocket.close()
             return
 
@@ -92,8 +115,6 @@ async def guest_endpoint(websocket: WebSocket):
             "room_code": room_code,
             "client_name": name
         })
-
-        print(rooms)
 
         await rooms[room_code]["host"][0].send_json({
             "type": "guest_joined",
