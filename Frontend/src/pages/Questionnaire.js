@@ -8,10 +8,34 @@ const Questionnaire = () => {
   const [selectedPriceRange, setSelectedPriceRange] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [errorMessage, setErrorMessage] = useState(""); 
+  const [questions, setQuestions] = useState([]);
+  const [currentQuestionData, setCurrentQuestionData] = useState(null); // Para almacenar la pregunta actual
+  const [waitingForResponses, setWaitingForResponses] = useState(false); // Indica si estamos esperando respuestas
 
   const navigate = useNavigate(); 
   const location = useLocation();
   const isHost = location.state?.isHost;
+
+  // Dummy data para las preguntas (simulando la respuesta de la API)
+  const fetchQuestions = () => {
+    const dummyQuestions = [
+      {
+        question: 'Which best describes your ideal travel pace?',
+        options: ['Relaxed', 'Moderate', 'Busy', 'Fast-paced']
+      },
+      {
+        question: 'What type of accommodation do you prefer?',
+        options: ['Hotel', 'Hostel', 'Airbnb', 'Camping']
+      },
+      {
+        question: 'What activities do you prefer on vacation?',
+        options: ['Relaxing', 'Adventure', 'Sightseeing', 'Shopping']
+      }
+    ];
+
+    setQuestions(dummyQuestions);
+    setCurrentQuestionData(dummyQuestions[0]); // Comienza con la primera pregunta
+  };
 
   useEffect(() => {
     if (isHost) {
@@ -24,18 +48,32 @@ const Questionnaire = () => {
     }
   }, [isHost]);
 
-  // Función para ir atrás con confirmación
-  const goBack = () => {
-    const confirmation = window.confirm(
-      "Are you sure you want to go back? You will return to the room and lose all your progress."
-    );
-    if (confirmation) {
-      navigate(-1); // Regresa a la página anterior si el usuario confirma
+  useEffect(() => {
+    if (currentQuestion === 2) {
+      fetchQuestions(); // Cargar las preguntas cuando se llega a la pregunta 2
+    }
+  }, [currentQuestion]);
+
+  const nextQuestion = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+      setCurrentQuestionData(questions[currentQuestion + 1]);
     } else {
-      console.log("User canceled the navigation.");
+      finishQuestionnaire();
     }
   };
 
+  const finishQuestionnaire = () => {
+    navigate('/results'); // Redirige a la página de resultados
+  };
+
+  const handleAnswer = (answer) => {
+    console.log("Answer selected:", answer);
+    setWaitingForResponses(true); // Activamos el estado de espera
+    // Enviar respuesta al servidor y esperar la próxima pregunta o destino
+  };
+
+  // Funciones que faltaban para manejar los cambios de fecha, agregar/quitar períodos y validar fechas
   const handleDateChange = (index, field, value) => {
     const updatedPeriods = [...periods];
     updatedPeriods[index][field] = value;
@@ -43,47 +81,11 @@ const Questionnaire = () => {
     setErrorMessage(""); 
   };
 
+  const removePeriod = (index) => {
+    setPeriods(periods.filter((_, i) => i !== index));
+  };
+
   const addPeriod = () => setPeriods([...periods, { startDate: '', endDate: '' }]);
-  const removePeriod = (index) => setPeriods(periods.filter((_, i) => i !== index));
-
-  const mergePeriods = () => {
-    const sortedPeriods = periods.map(p => ({
-      ...p,
-      startDate: new Date(p.startDate),
-      endDate: new Date(p.endDate),
-    })).sort((a, b) => a.startDate - b.startDate);
-
-    let mergedPeriods = [];
-    for (let i = 0; i < sortedPeriods.length; i++) {
-      if (mergedPeriods.length === 0) {
-        mergedPeriods.push(sortedPeriods[i]);
-      } else {
-        const lastMergedPeriod = mergedPeriods[mergedPeriods.length - 1];
-        const currentPeriod = sortedPeriods[i];
-        if (lastMergedPeriod.endDate >= currentPeriod.startDate) {
-          lastMergedPeriod.endDate = new Date(Math.max(lastMergedPeriod.endDate, currentPeriod.endDate));
-        } else {
-          mergedPeriods.push(currentPeriod);
-        }
-      }
-    }
-    return mergedPeriods;
-  };
-
-  const submitAvailability = () => {
-    if (!validateDates()) {
-      setErrorMessage("The departure date must be earlier than the return date.");
-      return;
-    }
-
-    const mergedPeriods = mergePeriods();
-    const availability = [];
-    mergedPeriods.forEach((period) => {
-      availability.push(period.startDate.toISOString().split('T')[0]);
-      availability.push(period.endDate.toISOString().split('T')[0]);
-    });
-    console.log('Availability:', availability);
-  };
 
   const validateDates = () => {
     for (let period of periods) {
@@ -96,22 +98,9 @@ const Questionnaire = () => {
     return true;
   };
 
-  const nextQuestion = () => {
-    if (currentQuestion === 0 && periods.length > 0) {
-      setCurrentQuestion(1);
-    } else if (currentQuestion === 1 && selectedPriceRange) {
-      setCurrentQuestion(2);
-    }
-  };
-
-  const finishQuestionnaire = () => {
-    navigate('/results'); // Redirige a la página de resultados
-  };
-
   return (
     <div className="questionnaire-container">
-      {/* Flecha para regresar dentro del contenedor blanco */}
-      <div className="back-button" onClick={goBack}>
+      <div className="back-button" onClick={() => navigate(-1)}>
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path d="M15 18l-6-6 6-6" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
@@ -163,21 +152,19 @@ const Questionnaire = () => {
         <div>
           <h2>How much are you willing to spend on your flight?</h2>
           <div className="price-range-options">
-            {[
-              { label: "$0 – $100", range: "$0 – $100", notes: "Ultra budget - Deals, low-cost carriers" },
+            {[{ label: "$0 – $100", range: "$0 – $100", notes: "Ultra budget - Deals, low-cost carriers" },
               { label: "$100 – $250", range: "$100 – $250", notes: "Budget - Common short-haul fares" },
               { label: "$250 – $500", range: "$250 – $500", notes: "Mid-range - Standard regional/international" },
               { label: "$500 – $1000", range: "$500 – $1000", notes: "Higher-end - Long-haul or business fares" },
-              { label: "$1000 – $3000", range: "$1000 – $3000", notes: "Premium - Long-haul business/luxury" }
-            ].map((priceOption, index) => (
-              <div 
-                key={index} 
-                className={`price-option ${selectedPriceRange === priceOption.range ? 'selected' : ''}`}
-                onClick={() => setSelectedPriceRange(priceOption.range)}
-              >
-                <div className="price-label">{priceOption.label}</div>
-                <div className="price-notes">{priceOption.notes}</div>
-              </div>
+              { label: "$1000 – $3000", range: "$1000 – $3000", notes: "Premium - Long-haul business/luxury" }].map((priceOption, index) => (
+                <div 
+                  key={index} 
+                  className={`price-option ${selectedPriceRange === priceOption.range ? 'selected' : ''}`}
+                  onClick={() => setSelectedPriceRange(priceOption.range)}
+                >
+                  <div className="price-label">{priceOption.label}</div>
+                  <div className="price-notes">{priceOption.notes}</div>
+                </div>
             ))}
           </div>
           <div className="next-question-container">
@@ -192,7 +179,36 @@ const Questionnaire = () => {
         </div>
       )}
 
-      {currentQuestion === 2 && (
+      {currentQuestion === 2 && currentQuestionData && (
+        <div>
+          <h2>{currentQuestionData.question}</h2>
+          <div className="question-options">
+            {currentQuestionData.options.map((option, index) => (
+              <button 
+                key={index} 
+                className="option-btn" 
+                onClick={() => handleAnswer(option)}
+              >
+                {option}
+              </button>
+            ))}
+          </div>
+
+          {waitingForResponses && <p>Waiting for your teammates to answer...</p>}
+
+          <div className="next-question-container">
+            <button 
+              className="next-question-btn" 
+              onClick={nextQuestion}
+              disabled={waitingForResponses}
+            >
+              Next Question
+            </button>
+          </div>
+        </div>
+      )}
+
+      {currentQuestion === 3 && (
         <div>
           <h2>Thank you for completing the questionnaire!</h2>
           <button className="next-question-btn" onClick={finishQuestionnaire}>
