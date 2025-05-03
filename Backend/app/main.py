@@ -1,9 +1,10 @@
 # app/main.py
 
 from fastapi import FastAPI, Query, WebSocket, WebSocketDisconnect
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Tuple
 from app.skyscannerAPI.AirportDatabase import AirportDatabase 
-from app.manager.room_manager import create_room, add_guest_to_room, remove_guest, delete_room
+from app.manager.room_manager import create_room, add_guest_to_room, remove_guest, delete_room, get_all_users
 from app.manager.question_manager import initialize_questions, handle_answer
 from app.manager.recommendation import handle_recommendation_response
 from app.manager.transport import calculate_final_transport
@@ -13,30 +14,42 @@ from app.utils.broadcast import broadcast_to_room
 app = FastAPI()
 airport_db = AirportDatabase()
 
+origins = [
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # GET, POST, etc.
+    allow_headers=["*"],
+)
+
 @app.websocket("/ws/create")
 async def host_endpoint(websocket: WebSocket):
-    await websocket.accept()
-
-    data = await websocket.receive_json()
-    msg_type = data.get("type")
-
-    if msg_type != "create":
-        await websocket.close()
-        return
-    
-    name = data.get("name")
-    iata = data.get("iata")
-    price = data.get("price")
-
-    if not name or not iata or not price:
-        await websocket.close()
-        return
-
-    room_code = create_room(websocket, name, iata, price)
-
-    await websocket.send_json({"type": "room_created", "room_code": room_code, "host_name": name})
-
     try:
+        await websocket.accept()
+
+        data = await websocket.receive_json()
+        msg_type = data.get("type")
+
+        if msg_type != "create":
+            await websocket.close()
+            return
+        
+        name = data.get("name")
+        iata = data.get("iata")
+        price = data.get("price")
+
+        if not name or not iata or not price:
+            await websocket.close()
+            return
+
+        room_code = create_room(websocket, name, iata, price)
+
+        await websocket.send_json({"type": "room_created", "room_code": room_code, "host_name": name})
+
         while True:
             data = await websocket.receive_json()
             msg_type = data.get("type")
@@ -66,22 +79,17 @@ async def host_endpoint(websocket: WebSocket):
 
 @app.websocket("/ws/join/{room_code}")
 async def guest_endpoint(websocket: WebSocket, room_code: str):
-    await websocket.accept()
-
-    if room_code not in rooms:
-        await websocket.send_json({
-            "type": "error",
-            "message": "Invalid room code"
-        })
-        await websocket.close()
-        return
-
-    await websocket.send_json({
-        "type": "info",
-        "message": f"Found a room with room code {room_code}"
-    })
-
     try:
+        await websocket.accept()
+
+        if room_code not in rooms:
+            await websocket.send_json({
+                "type": "error",
+                "message": "Invalid room code"
+            })
+            await websocket.close()
+            return
+
         guest_data = await websocket.receive_json()
         
         msg_type = guest_data.get("type")
@@ -109,18 +117,17 @@ async def guest_endpoint(websocket: WebSocket, room_code: str):
             })
             await websocket.close()
             return
-
-        await websocket.send_json({
-            "type": "joined",
-            "room_code": room_code,
-            "client_name": name
-        })
-
-        await rooms[room_code]["host"][0].send_json({
+        
+        message = {
             "type": "guest_joined",
             "room_code": room_code,
-            "client_name": name
-        })
+            "client_name": name,
+            "users": get_all_users(room_code)
+        }
+
+        await rooms[room_code]["host"][0].send_json(message)
+        message["type"] = "joined"
+        await broadcast_to_room(room_code, message)
 
         while True:
             data = await websocket.receive_json()

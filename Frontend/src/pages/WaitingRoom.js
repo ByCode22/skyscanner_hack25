@@ -1,53 +1,71 @@
-// src/components/WaitingRoom.js
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'; // Importamos useNavigate
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import './waitingRoom.css';
 
-const WaitingRoom = ({ creator, roomId }) => {
-  const [participants, setParticipants] = useState([creator]);
+import hostSocketService from '../services/HostSocketService';
+import guestSocketService from '../services/GuestSocketService';
+
+const WaitingRoom = () => {
+  const { roomId } = useParams();
+  const location = useLocation();
+  const { username: creator, roomCode, users: initialUsers } = location.state || {};
+  const [participants, setParticipants] = useState(initialUsers || [creator]);
   const [canStart, setCanStart] = useState(false);
-  const navigate = useNavigate(); // Hook para navegación
-
-  // Simulación de que alguien se une a la sala (esto es solo para demostración)
-  useEffect(() => {
-    setTimeout(() => {
-      setParticipants(prev => [...prev, 'Carlos Sánchez']);
-    }, 2000);
-  }, []);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (participants[0] === creator) {
-      setCanStart(true);
-    } else {
-      setCanStart(false);
-    }
+    console.log("🧠 WaitingRoom mounted. roomId =", roomId);
+
+    hostSocketService.onGuestJoined((roomCode, guestName, users) => {
+      console.log("✅ host received guest_joined:", roomCode, guestName, users);
+      if (roomCode === roomId) {
+        setParticipants(users);
+      }
+    });
+
+    guestSocketService.onJoined((roomCode, clientName, users) => {
+      console.log("✅ guest received joined:", roomCode, clientName, users);
+      if (roomCode === roomId) {
+        setParticipants(users);
+      }
+    });
+
+    return () => {
+      console.log("👋 WaitingRoom unmounted");
+    };
+  }, [roomId]);
+
+  useEffect(() => {
+    console.log("👥 Participants updated:", participants);
+    setCanStart(participants[0] === creator);
   }, [participants, creator]);
 
   const startQuiz = () => {
-    if (creator === participants[0]) {
-      console.log("Iniciando el quiz...");
+    if (canStart) {
       navigate(`/quiz/${roomId}`);
     } else {
-      alert("Solo el creador puede iniciar el quiz.");
+      alert("Only the host can start the quiz.");
     }
   };
 
-  // Función para ir atrás
   const goBack = () => {
-    navigate(-1); // Navega hacia la página anterior
+    navigate(-1);
   };
+
+  if (!roomId || !creator) {
+    return <p>❌ Missing room information. Please return to home.</p>;
+  }
 
   return (
     <div className="waiting-room-container">
-      {/* Botón de flecha para ir atrás */}
       <div className="back-button" onClick={goBack}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M15 18l-6-6 6-6" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
 
       <div className="room-header">
-        <h2>Welcome to the room:{roomId}</h2>
+        <h2>Welcome to the room: {roomId}</h2>
         <p><strong>Participants:</strong> {participants.length}</p>
       </div>
 
@@ -65,7 +83,7 @@ const WaitingRoom = ({ creator, roomId }) => {
           className="start-btn" 
           disabled={!canStart}
         >
-          {canStart ? 'Iniciar Quiz' : 'Esperando más participantes...'}
+          {canStart ? 'Start Quiz' : 'Waiting for more participants...'}
         </button>
       </div>
     </div>

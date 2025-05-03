@@ -33,9 +33,11 @@ def add_guest_to_room(room_code: str, websocket: WebSocket, name: str, iata: str
 
 
 def remove_guest(websocket: WebSocket):
-    """Remove guest by websocket from any room."""
+    """Remove guest tuple by websocket from any room."""
     for room in rooms.values():
-        room["guests"] = [g for g in room["guests"] if g["websocket"] != websocket]
+        room["guests"] = [
+            g for g in room["guests"] if g[0] != websocket  # g[0] is the websocket
+        ]
 
 
 
@@ -50,4 +52,4 @@ def get_all_users(room_code: str):
     room = rooms.get(room_code)
     if not room:
         return []
-    return [room["host"]] + room["guests"]
+    return [room["host"][1]] + [guest[1] for guest in room["guests"]]

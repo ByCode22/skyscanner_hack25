@@ -1,13 +1,58 @@
-// src/pages/HomePage.js
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './home.css';  // Importa los estilos de la página
+import './home.css';
+import hostSocketService from '../services/HostSocketService';
+import guestSocketService from '../services/GuestSocketService';
 
 const HomePage = () => {
   const [username, setUsername] = useState('');
   const [roomId, setRoomId] = useState('');
-  const [isJoiningRoom, setIsJoiningRoom] = useState(false);  // Determina si el usuario quiere unirse o crear
+  const [isJoiningRoom, setIsJoiningRoom] = useState(false);
   const navigate = useNavigate();
+
+  const handleHostSocketConnection = () => {
+    hostSocketService.onRoomCreated((roomCode) => {
+      navigate(`/waiting-room/${roomCode}`, {
+        state: { username, roomCode },
+      });
+    });
+  
+    hostSocketService.onOpen(() => {
+      hostSocketService.sendHostInfo({
+        name: username,
+        iata: 'BCN',
+        price: 300,
+      });
+    });
+  
+    hostSocketService.connect();
+  };
+  
+  const handleGuestSocketConnection = () => {
+    guestSocketService.onJoined((roomCode, clientName, users) => {
+      navigate(`/waiting-room/${roomCode}`, {
+        state: {
+          username: clientName,
+          roomCode,
+          users,
+        },
+      });
+    });
+  
+    guestSocketService.onError((message) => {
+      alert("Failed to join room: " + message);
+    });
+  
+    guestSocketService.onOpen(() => {
+      guestSocketService.sendJoinInfo();
+    });
+  
+    guestSocketService.connect(roomId, {
+      name: username,
+      iata: 'ICN',
+      price: 450,
+    });
+  };  
 
   const handleAction = () => {
     if (!username) {
@@ -21,22 +66,19 @@ const HomePage = () => {
     }
 
     if (isJoiningRoom) {
-      navigate(`/waiting-room/${roomId}`, { state: { username } });
+      handleGuestSocketConnection();
     } else {
-      const newRoomId = generateRoomId();
-      navigate(`/waiting-room/${newRoomId}`, { state: { username } });
+      handleHostSocketConnection();
     }
-  };
-
-  const generateRoomId = () => {
-    return Math.random().toString(36).substring(2, 8);  // Genera un ID aleatorio corto
   };
 
   return (
     <div className="home-container">
       <div className="welcome-box">
         <h1 className="main-title">Welcome to The Perfect Reunion</h1>
-        <p className="subtitle">Plan the best trip with your friends. Let’s find the perfect destination together!</p>
+        <p className="subtitle">
+          Plan the best trip with your friends. Let’s find the perfect destination together!
+        </p>
 
         <div className="form-container">
           <div className="username-switch-container">
@@ -48,7 +90,6 @@ const HomePage = () => {
               className="username-input"
             />
 
-            {/* Switch para elegir entre crear o unirse a una sala */}
             <div className="switch-container">
               <label className="switch">
                 <input
@@ -62,7 +103,6 @@ const HomePage = () => {
             </div>
           </div>
 
-          {/* Campo para Room ID solo si el usuario quiere unirse */}
           {isJoiningRoom && (
             <input
               type="text"
@@ -73,7 +113,6 @@ const HomePage = () => {
             />
           )}
 
-          {/* Botón único que cambia de texto según la acción */}
           <button onClick={handleAction} className="home-button">
             {isJoiningRoom ? 'Join Room' : 'Create Room'}
           </button>
