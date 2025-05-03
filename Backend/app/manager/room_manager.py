@@ -4,7 +4,6 @@ import string, random
 from fastapi import WebSocket
 from app.models.room_state import rooms
 
-
 def generate_room_code(length: int = 6) -> str:
     """Generate a unique alphanumeric room code."""
     chars = string.ascii_letters + string.digits
@@ -32,15 +31,23 @@ def add_guest_to_room(room_code: str, websocket: WebSocket, name: str, iata: str
     return True
 
 
+
 def remove_guest(websocket: WebSocket):
-    """Remove a guest websocket from any room it is part of."""
+    """Remove guest by websocket from any room."""
     for room in rooms.values():
-        if websocket in room["guests"]:
-            room["guests"].remove(websocket)
-            break
+        room["guests"] = [g for g in room["guests"] if g["websocket"] != websocket]
+
 
 
 def delete_room(room_code: str):
     """Delete the room and clean up associated state."""
     if room_code in rooms:
         del rooms[room_code]
+
+
+
+def get_all_users(room_code: str):
+    room = rooms.get(room_code)
+    if not room:
+        return []
+    return [room["host"]] + room["guests"]

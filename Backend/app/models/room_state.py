@@ -4,6 +4,7 @@
 # Format: { room_code: { "host": (WebSocket, others..), "guests": [(WebSocket, others..), ...] } }
 rooms = {}
 
+
 # Stores question state for each room
 # Format:
 # {
