@@ -7,7 +7,7 @@ import os
 load_dotenv()
 
 # Configure Gemini API key
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+genai.configure(api_key="AIzaSyBiElZs-VDNaoZIJAdmdYcf-dN1p77uhoE")
 
 def generar_prompt_pregunta(history):
     if len(history) > 0:
@@ -49,7 +49,7 @@ def generar_prompt_sugerencia(history):
     prompt = f"""
 You are helping a group of people choose an airport anywhere in the world in 'en-GB' for their trip.
 
-Based on their collective answers, suggest 5 countries that could match their preferences well. The fourth option must be: "Keep answering questions to refine further".
+Based on their collective answers, suggest 3 airports that could match their preferences well. The fourth option must be: "Keep answering questions to refine further".
 
 History of most voted answers:
 {history_text}
@@ -57,7 +57,7 @@ History of most voted answers:
 ⚠️ Return ONLY a JSON object without any Markdown formatting (no extra text):
 
 {{
-    "options": ["City 1", "City 2", "City 3", "City 4", "City 5", "Keep answering questions to refine further"]
+    "options": [City 1, City 2, City 3, "Keep answering questions to refine further"]
 }}
 """
     return prompt
@@ -85,3 +85,5 @@ def extract_json_from_string(text: str):
     match = re.search(r"```(?:json)?\s*(.*?)\s*```", text, re.DOTALL)
     content = match.group(1) if match else text.strip()
     return json.loads(content)
+
+print(obtener_respuesta([], False))

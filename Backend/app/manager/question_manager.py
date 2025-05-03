@@ -34,8 +34,8 @@ def intersect_periods(raw_period_data: List) -> Optional[DatePeriod]:
 
     periods = [
         (
-            stringdate_to_datetime(period['start_date']),
-            stringdate_to_datetime(period['end_date'])
+            stringdate_to_datetime(period[1]['start_date']),
+            stringdate_to_datetime(period[1]['end_date'])
         )
         for period in raw_period_data
     ]
@@ -77,9 +77,10 @@ async def handle_answer(websocket: WebSocket, room_code: str, data: dict):
     if "responses" not in entry:
         entry["responses"] = []
 
-    entry["responses"].append(data)
+    entry["responses"].append((websocket, data))
     await websocket.send_json({"type": "answer_received", "message": "Answer recorded"})
 
+    print(entry["responses"])
     if len(entry["responses"]) == total_participants:
         question_text = entry["current_question"]
         options = entry.get("current_options", [])
@@ -103,12 +104,7 @@ async def handle_answer(websocket: WebSocket, room_code: str, data: dict):
             entry["full_history"].append({
                 "question": question_text,
                 "answers": {
-                    "period": [
-                        {
-                            "start_date": r["start_date"],
-                            "end_date": r["end_date"]
-                        } for r in entry["responses"]
-                    ]
+                    "period": entry["responses"]
                 }
             })
             entry["history"].append({
@@ -117,7 +113,7 @@ async def handle_answer(websocket: WebSocket, room_code: str, data: dict):
             })
 
         else:
-            indices = [r["index"] for r in entry["responses"]]
+            indices = [r[1]["index"] for r in entry["responses"]]
             selected_index = Counter(indices).most_common(1)[0][0]
             selected_option = options[selected_index] if 0 <= selected_index < len(options) else "Unknown"
 
@@ -139,10 +135,8 @@ async def handle_answer(websocket: WebSocket, room_code: str, data: dict):
 
             entry["full_history"].append({
                 "question": question_text,
-                "answers": {
-                    "option": selected_option,
-                    "choices": ", ".join(options)
-                }
+                "answers": entry["responses"],
+                "options": ", ".join(options)
             })
             entry["history"].append({
                 "question": question_text,
@@ -152,6 +146,7 @@ async def handle_answer(websocket: WebSocket, room_code: str, data: dict):
         # Reset responses and send next question
         entry["responses"] = []
         history_len = len(entry["history"])
+        print(entry)
 
         if history_len == 2 or (history_len > 2 and (history_len - 2) % 1 == 0):
             await trigger_recommendation(room_code)

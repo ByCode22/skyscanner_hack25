@@ -1,6 +1,8 @@
 # app/main.py
 
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, Query, WebSocket, WebSocketDisconnect
+from typing import List, Tuple
+from app.skyscannerAPI.AirportDatabase import AirportDatabase 
 from app.manager.room_manager import create_room, add_guest_to_room, remove_guest, delete_room
 from app.manager.question_manager import initialize_questions, handle_answer
 from app.manager.recommendation import handle_recommendation_response
@@ -9,6 +11,7 @@ from app.models.room_state import rooms, questions, recommendations
 from app.utils.broadcast import broadcast_to_room
 
 app = FastAPI()
+airport_db = AirportDatabase()
 
 @app.websocket("/ws/create")
 async def host_endpoint(websocket: WebSocket):
@@ -17,15 +20,21 @@ async def host_endpoint(websocket: WebSocket):
     data = await websocket.receive_json()
     msg_type = data.get("type")
 
-    if msg_type != "info":
-        return 
+    if msg_type != "create":
+        return
     
     name = data.get("name")
-    origin = data.get("origin")
+    iata = data.get("iata")
     price = data.get("price")
-    room_code = create_room(websocket, name, origin, price)
 
-    await websocket.send_json({"type": "room_created", "room_code": room_code})
+    if not name or not iata or not price:
+        return
+
+    room_code = create_room(websocket, name, iata, price)
+
+    print(rooms)
+
+    await websocket.send_json({"type": "room_created", "room_code": room_code, "host_name": name})
 
     try:
         while True:
@@ -60,21 +69,36 @@ async def guest_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
         join_data = await websocket.receive_json()
-        room_code = join_data.get("room_code")
+        msg_type = join_data.get("type")
 
-        if not add_guest_to_room(room_code, websocket):
+        if msg_type != "join":
+            return
+        
+        room_code = join_data.get("room_code")
+        name = join_data.get("name")
+        iata = join_data.get("iata")
+        price = join_data.get("price")
+
+        if not room_code or not name or not iata or not price:
+            return
+
+        if not add_guest_to_room(room_code, websocket, name, iata, price):
             await websocket.send_json({"type": "error", "message": "Invalid room code"})
             await websocket.close()
             return
 
         await websocket.send_json({
             "type": "joined",
-            "room_code": room_code
+            "room_code": room_code,
+            "client_name": name
         })
 
-        await rooms[room_code]["host"].send_json({
+        print(rooms)
+
+        await rooms[room_code]["host"][0].send_json({
             "type": "guest_joined",
-            "room_code": room_code
+            "room_code": room_code,
+            "client_name": name
         })
 
         while True:
@@ -92,4 +116,12 @@ async def guest_endpoint(websocket: WebSocket):
 
     except WebSocketDisconnect:
         remove_guest(websocket)
+        
+@app.get("/search-airports", response_model=List[Tuple[str, str]])
+def search_airports(name: str = Query(..., description="Full or partial airport name")):
+    """
+    Search for airports whose name contains the given string.
+    Returns a list of (airport_name, iata_code) pairs, max 10 results.
+    """
+    return airport_db.search_airports_by_keyword(name)
 
