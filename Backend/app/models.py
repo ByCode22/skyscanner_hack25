@@ -1,4 +1,3 @@
-# Modelos Pydantic para validar datos
 from pydantic import BaseModel
 from typing import List
 
@@ -8,3 +7,4 @@ class DatosEntrada(BaseModel):
     paisaje: str
     presupuesto: str
     actividades: List[str]
+

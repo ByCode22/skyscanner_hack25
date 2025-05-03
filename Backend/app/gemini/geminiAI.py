@@ -1,6 +1,6 @@
 import google.generativeai as genai
-from prompts import generar_prompt
-from config import API_KEY
+from Backend.app.prompts.prompts import generar_prompt
+from Backend.app.gemini.config import API_KEY
 
 # Configurar la clave de API de Gemini
 genai.configure(api_key=API_KEY)

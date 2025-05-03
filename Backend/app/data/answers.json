@@ -1,0 +1,22 @@
+{
+    "560387": {
+        "pau": {
+            "fecha": "2025-06-01 to 2025-06-10",
+            "paisaje": "playa",
+            "presupuesto": "2000 EUR",
+            "actividades": [
+                "comer",
+                " bailar"
+            ]
+        },
+        "yassin": {
+            "fecha": "2025-06-01 to 2025-06-10",
+            "paisaje": "monta\u00f1a",
+            "presupuesto": "1000 EUR",
+            "actividades": [
+                "senderismo",
+                " correr"
+            ]
+        }
+    }
+}
