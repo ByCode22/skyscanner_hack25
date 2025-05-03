@@ -2,10 +2,10 @@
 
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from app.manager.room_manager import create_room, add_guest_to_room, remove_guest, delete_room
-from app.manager.question_manager import handle_answer, handle_initial_answers
+from app.manager.question_manager import initialize_questions, handle_answer
 from app.manager.recommendation import handle_recommendation_response
 from app.manager.transport import calculate_final_transport
-from app.models.room_state import rooms, questions, recommendations, initial_responses
+from app.models.room_state import rooms, questions, recommendations
 from app.utils.broadcast import broadcast_to_room
 
 app = FastAPI()
@@ -23,16 +23,16 @@ async def host_endpoint(websocket: WebSocket):
             msg_type = data.get("type")
 
             if msg_type == "start":
+                first_question = await initialize_questions(room_code)
+
                 await broadcast_to_room(room_code, {
-                    "type": "start",
-                    "message": "Initial questions may begin"
+                    "type": "question",
+                    "question_id": 0,
+                    **first_question
                 })
 
-            elif msg_type == "initial_answers":
-                await handle_initial_answers(websocket, room_code, data.get("answers", []))
-
             elif msg_type == "answer":
-                await handle_answer(websocket, room_code, data.get("value"))
+                await handle_answer(websocket, room_code, data.get("answer"))
 
             elif msg_type == "select_recommendation":
                 await handle_recommendation_response(websocket, room_code, data.get("selected"))
@@ -44,7 +44,6 @@ async def host_endpoint(websocket: WebSocket):
         delete_room(room_code)
         questions.pop(room_code, None)
         recommendations.pop(room_code, None)
-        initial_responses.pop(room_code, None)
 
 @app.websocket("/ws/join")
 async def guest_endpoint(websocket: WebSocket):
@@ -72,11 +71,8 @@ async def guest_endpoint(websocket: WebSocket):
             data = await websocket.receive_json()
             msg_type = data.get("type")
 
-            if msg_type == "initial_answers":
-                await handle_initial_answers(websocket, room_code, data.get("answers", []))
-
-            elif msg_type == "answer":
-                await handle_answer(websocket, room_code, data.get("value"))
+            if msg_type == "answer":
+                await handle_answer(websocket, room_code, data.get("answer"))
 
             elif msg_type == "select_recommendation":
                 await handle_recommendation_response(websocket, room_code, data.get("selected"))

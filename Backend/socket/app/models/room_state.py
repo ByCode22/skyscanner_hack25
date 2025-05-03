@@ -9,8 +9,10 @@ rooms = {}
 # {
 #   room_code: {
 #       "current_question": str,
+#		"current_options" : [str],
 #       "responses": [int],
-#       "history": [{"question": str, "average": float}]
+#		"full_history": [{"question": str, "answers": {"option": str, "choices": str} | "period": str}]
+#       "history": [{"question": str, "answer": string}]
 #   }
 # }
 questions = {}
@@ -25,13 +27,3 @@ questions = {}
 #   }
 # }
 recommendations = {}
-
-# Stores initial client-defined questions and answers
-# Format:
-# {
-#   room_code: [
-#       {"question": str, "answer": Any},
-#       ...
-#   ]
-# }
-initial_responses = {}
