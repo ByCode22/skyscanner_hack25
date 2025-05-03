@@ -1,8 +1,28 @@
 # models/room_state.py
 
 # Stores all active rooms
-# Format: { room_code: { "host": WebSocket, "guests": [WebSocket, ...] } }
+# Format:
+# {
+#   room_code: {
+#       "host": {
+#           "websocket": WebSocket,
+#           "name": str,
+#           "origen": str,
+#           "precio": int
+#       },
+#       "guests": [
+#           {
+#               "websocket": WebSocket,
+#               "name": str,
+#               "origen": str,
+#               "precio": int
+#           },
+#           ...
+#       ]
+#   }
+# }
 rooms = {}
+
 
 # Stores question state for each room
 # Format:

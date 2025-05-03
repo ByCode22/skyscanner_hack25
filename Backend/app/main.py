@@ -13,7 +13,17 @@ app = FastAPI()
 @app.websocket("/ws/create")
 async def host_endpoint(websocket: WebSocket):
     await websocket.accept()
-    room_code = create_room(websocket)
+
+    data = await websocket.receive_json()
+    msg_type = data.get("type")
+
+    if msg_type != "info":
+        return 
+    
+    name = data.get("name")
+    origin = data.get("origin")
+    price = data.get("price")
+    room_code = create_room(websocket, name, origin, price)
 
     await websocket.send_json({"type": "room_created", "room_code": room_code})
 

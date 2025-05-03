@@ -4,7 +4,6 @@ import string, random
 from fastapi import WebSocket
 from app.models.room_state import rooms
 
-
 def generate_room_code(length: int = 6) -> str:
     """Generate a unique alphanumeric room code."""
     chars = string.ascii_letters + string.digits
@@ -14,33 +13,52 @@ def generate_room_code(length: int = 6) -> str:
             return code
 
 
-def create_room(websocket: WebSocket) -> str:
-    """Register a new room with the host websocket and return the room code."""
+def create_room(websocket: WebSocket, name: str, origen: str, precio: int) -> str:
+    """Register a new room with the host and return the room code."""
     room_code = generate_room_code()
     rooms[room_code] = {
-        "host": websocket,
+        "host": {
+            "websocket": websocket,
+            "name": name,
+            "origen": origen,
+            "precio": precio
+        },
         "guests": []
     }
     return room_code
 
 
-def add_guest_to_room(room_code: str, websocket: WebSocket) -> bool:
-    """Add a guest websocket to an existing room. Returns False if room doesn't exist."""
+
+def add_guest_to_room(room_code: str, websocket: WebSocket, name: str, origen: str, precio: int) -> bool:
+    """Add a guest to a room with metadata."""
     if room_code not in rooms:
         return False
-    rooms[room_code]["guests"].append(websocket)
+    rooms[room_code]["guests"].append({
+        "websocket": websocket,
+        "name": name,
+        "origen": origen,
+        "precio": precio
+    })
     return True
 
 
+
 def remove_guest(websocket: WebSocket):
-    """Remove a guest websocket from any room it is part of."""
+    """Remove guest by websocket from any room."""
     for room in rooms.values():
-        if websocket in room["guests"]:
-            room["guests"].remove(websocket)
-            break
+        room["guests"] = [g for g in room["guests"] if g["websocket"] != websocket]
+
 
 
 def delete_room(room_code: str):
     """Delete the room and clean up associated state."""
     if room_code in rooms:
         del rooms[room_code]
+
+
+
+def get_all_users(room_code: str):
+    room = rooms.get(room_code)
+    if not room:
+        return []
+    return [room["host"]] + room["guests"]
