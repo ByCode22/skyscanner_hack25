@@ -96,7 +96,7 @@ const WaitingRoom = () => {
           <p className="room-id"><strong>Room code:</strong> {roomId}</p>
           <button className="copy-button" onClick={copyToClipboard}>Copy code</button>
         </div>
-        <p><strong>Participants:</strong> {participants.length}</p>
+        <p className="numParticipants"><strong>Participants:</strong> {participants.length}</p>
       </div>
 
       <div className="participants-list">
