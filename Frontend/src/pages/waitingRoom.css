@@ -49,7 +49,7 @@ body {
 }
 
 .room-id {
-  font-size: 1.0rem;
+  font-size: 1.2rem;
   margin-left: 100px;
 }
 
@@ -58,7 +58,7 @@ body {
   background-color: #007bff;
   color: white;
   padding: 5px 12px;
-  font-size: 1.0rem;
+  font-size: 1.2rem;
   border-radius: 12px;
   border: none;
   cursor: pointer;
@@ -73,6 +73,10 @@ body {
   transform: translateY(2px);
 }
 
+.numParticipants {
+  font-size: 1.2rem;
+}
+
 /* Estilo para la lista de participantes */
 .participants-list {
   margin-bottom: 30px;
@@ -80,7 +84,7 @@ body {
 }
 
 .participant-item {
-  font-size: 1.0rem;
+  font-size: 1.2rem;
   color: #333;
   padding: 8px;
   margin-bottom: 10px;
