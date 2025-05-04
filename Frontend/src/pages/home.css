@@ -25,6 +25,7 @@ body {
   background-color: white;
   border-radius: 12px;
   padding: 30px;
+  padding-top: 0px;
   text-align: center;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
   width: 80%;
@@ -46,14 +47,15 @@ body {
 .subtitle {
   font-size: 1.1rem;
   color: #555;
-  margin-bottom: 25px;
+  margin-top: 30px;
+  margin-bottom: 20px;
 }
 
 /* Contenedor del formulario */
 .form-container {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px;
   width: 100%;
   align-items: center;
 }
@@ -65,14 +67,13 @@ body {
   width: 100%;
   gap: 5px;
   align-items: center;
-  margin-bottom: 20px;
 }
 
 /* Estilo del campo de entrada (nombre de usuario más pequeño) */
 .username-input {
   padding: 12px;
   width: 35%;
-  margin: 10px 0;
+  margin: 0px 0;
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 1rem;
