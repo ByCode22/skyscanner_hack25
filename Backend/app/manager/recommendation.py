@@ -63,9 +63,13 @@ async def handle_recommendation_response(websocket: WebSocket, room_code: str, a
             entry["responses"] = []
 
             all_ws = [rooms[room_code]["host"][0]] + [guest[0] for guest in rooms[room_code]["guests"]]
+            question_id = len(questions[room_code]["history"])
+
             for ws in all_ws:
                 await ws.send_json({
                     "type": "question",
-                    "question": next_question
+                    "question": next_question["question"],
+                    "question_id": question_id,
+                    "options": next_question.get("options", [])
                 })
 
