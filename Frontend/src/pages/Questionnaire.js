@@ -21,13 +21,17 @@ const Questionnaire = () => {
   const socket = isHost ? hostSocketService : guestSocketService;
 
   useEffect(() => {
+    console.log("🧠 currentQuestionData updated:", currentQuestionData);
+  }, [currentQuestionData]);
+
+  useEffect(() => {
     const handler = (data) => {
       setCurrentQuestionData({
         question: data.question,
         options: data.options
       });
-      setShowRecommendation(false);
       setWaitingForResponses(false);
+      setShowRecommendation(false);
       setCurrentQuestion(data.question_id);
     };
   
