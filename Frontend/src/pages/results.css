@@ -2,87 +2,200 @@
 
 /* Fondo general de la página */
 .results-container {
-  background: #f7f7f7;
+  background: #ffedba;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Mantener la altura completa de la pantalla */
-  padding: 10px;
   height: auto;
+  padding: 10px;
   border-radius: 12px;
   position: relative;
-  overflow: hidden; /* Evita la barra de desplazamiento */
 }
 
-/* Contenedor principal de los resultados */
+/* Contenedor principal de los resultados con fondo blanco transparente */
 .results-box {
-  background-color: white;
+  background: rgba(255, 255, 255, 0.9); /* Fondo blanco con 90% de opacidad */
   border-radius: 12px;
   padding: 20px;
   text-align: center;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 600px; /* Tamaño máximo del contenedor */
-  height: auto; /* Ajusta la altura al contenido */
+  max-width: 1000px;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  overflow-y: auto; /* Permite que solo se desplace si es necesario */
 }
 
 /* Título de los resultados */
 .results-box h2 {
   font-size: 2rem;
   color: #333;
-  font-weight: 500;  /* Peso de fuente ligeramente más pesado */
+  font-weight: 500;
   margin-bottom: 20px;
 }
 
-/* Estilo para las tarjetas de las ciudades */
-.destination-card {
+/* Contenedor de la ciudad y vuelos (parte izquierda y derecha) */
+.destination-content {
   display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+/* Parte izquierda: imagen y descripción de la ciudad */
+.destination-left {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 12px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
 }
 
-.destination-card:hover {
-  background-color: #f5f5f5;  /* Fondo gris suave en hover */
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-}
-
-/* Estilo para la imagen de la ciudad */
 .destination-image img {
-  width: 90px; /* Mayor tamaño de la imagen */
-  height: 90px;
+  width: 150px;
+  height: 150px;
   border-radius: 12px;
   object-fit: cover;
-  margin-right: 20px;  /* Espacio entre la imagen y el texto */
+  margin-bottom: 15px;
 }
 
-/* Texto de la ciudad */
 .destination-text {
-  text-align: left;
-  max-width: 500px;  /* Limitar el texto para mantener la estructura limpia */
+  text-align: center;
 }
 
 .destination-text h3 {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   color: #333;
-  font-weight: 600;  /* Peso de fuente más grueso */
-  margin-bottom: 8px;
+  font-weight: 600;
+  margin-bottom: 10px;
 }
 
-.destination-text .description {
+.description {
   font-size: 1rem;
   color: #666;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  margin-bottom: 15px;
+}
+
+.places {
+  font-size: 1rem;
+  color: #007bff;
+  font-weight: 500;
+}
+
+/* Parte derecha: vuelos con scroll */
+.destination-right {
+  flex: 1;
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  height: 400px;
+}
+
+.destination-right h3 {
+  font-size: 1.4rem;
+  color: #333;
+  margin-bottom: 10px;
+  position: relative;
+  padding-bottom: 10px;
+  text-align: left;
+}
+
+.flights-container {
+  flex-grow: 1;
+  overflow-y: auto;
+}
+
+/* Plantillas de vuelo con fondo alterno */
+.flight-card {
+  background-color: #ffffff;
+  padding: 15px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px; /* Separación entre las tarjetas */
+  border: 1px solid #e0e0e0; /* Borde sutil */
+}
+
+/* Fondos alternos para las tarjetas de vuelo */
+.flight-card:nth-child(even) {
+  background-color: #f7f7f7; /* Fondo gris claro para las tarjetas pares */
+}
+
+.flight-card:nth-child(odd) {
+  background-color: #ffffff; /* Fondo blanco para las tarjetas impares */
+}
+
+.flight-card:hover {
+  background-color: #f1f1f1;  /* Fondo más claro cuando se pasa el ratón sobre la tarjeta */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+}
+
+.flight-card h4 {
+  display: none; /* Se ha eliminado el título de la aerolínea */
+}
+
+.flight-card p {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0;
+}
+
+.flight-card p strong {
+  font-weight: 600;
+}
+
+.flight-card p span {
+  color: #007bff; /* Resaltar ciertos valores */
+}
+
+/* Agrupar From, To, Departure, Arrival, Duration, Airline */
+.flight-card .flight-info, .flight-card .time-info, .flight-card .company-info {
+  display: flex;
+  font-size: 0.9rem;
+  color: #666;
+  align-items: center;  /* Asegura que los elementos estén alineados verticalmente */
+  gap: 10px;  /* Añadido para dar espacio entre los elementos */
+}
+
+.flight-card .flight-info span, 
+.flight-card .time-info span,
+.flight-card .company-info span {
+  flex: 1; /* Distribuye el espacio de manera equitativa */
+}
+
+/* Alinear el texto a la izquierda para los elementos de la izquierda */
+.flight-card .flight-info span:nth-child(1), 
+.flight-card .time-info span:nth-child(1),
+.flight-card .company-info span:nth-child(1) {
+  text-align: left;
+  margin-right: 20px; /* Añadido margen a la derecha */
+}
+
+/* Alinear el texto a la derecha para los elementos de la derecha */
+.flight-card .flight-info span:nth-child(3), 
+.flight-card .time-info span:nth-child(3),
+.flight-card .company-info span:nth-child(2) {
+  text-align: right;
+  margin-left: 20px; /* Añadido margen a la izquierda */
+}
+
+/* Estilo para las flechas entre From -> To y Departure -> Arrival */
+.flight-card .arrow {
+  flex: 0 1 10%; /* La flecha ocupa un 10% del ancho */
+  text-align: center; /* Centra la flecha */
+}
+
+.flight-card .price {
+  font-size: 1.2rem;
+  color: #333;
+  font-weight: 600;
+  margin-top: 10px;
+  text-align: center;
 }
 
 /* Flecha para regresar */
@@ -107,9 +220,4 @@
 
 .back-button:hover svg {
   stroke: #0056b3;
-}
-
-/* Ajustes generales */
-* {
-  user-select: none;
 }
