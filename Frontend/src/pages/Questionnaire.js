@@ -44,9 +44,34 @@ const Questionnaire = () => {
       setWaitingForResponses(false);
     });
   
-    socket.onFinalDecision((data) => {
+    socket.onFinalDecision(async (data) => {
       console.log("🎉 Final destination selected:", data.selected);
-      navigate("/results", { state: { decision: data } });
+  
+      try {
+        const response = await fetch("http://localhost:8000/search-flights", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(data)
+        });
+  
+        const result = await response.json();
+  
+        if (result.flights) {
+          navigate("/results", {
+            state: {
+              decision: data,
+              flights: result.flights
+            }
+          });
+        } else {
+          alert("No flights found.");
+        }
+  
+      } catch (error) {
+        console.error("Failed to fetch flights:", error);
+      }
     });
   
     if (isHost) {

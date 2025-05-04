@@ -170,8 +170,6 @@ async def search_flights(data: FlightRequest):
         year, month, day = map(int, data.period.start_date.split("-"))
     except ValueError:
         return {"error": "Invalid date format. Use YYYY-MM-DD"}
-    
-    print(SKYSCANNER_API_KEY)
 
     flights = get_flights(SKYSCANNER_API_KEY, data.origin_iata, data.destination_iata, year, month, day)
 

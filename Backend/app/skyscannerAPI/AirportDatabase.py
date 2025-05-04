@@ -16,5 +16,9 @@ class AirportDatabase:
         if not isinstance(keyword, str) or len(keyword.strip()) == 0:
             raise ValueError("Keyword must be a non-empty string.")
 
-        filtered = self.df[self.df["airport_name"].str.contains(keyword, case=False, na=False)]
+        keyword = keyword.strip()
+        mask_name = self.df["airport_name"].str.contains(keyword, case=False, na=False)
+        mask_iata = self.df["iata"].str.contains(keyword, case=False, na=False)
+
+        filtered = self.df[mask_name | mask_iata]
         return list(zip(filtered["airport_name"], filtered["iata"]))[:limit]
