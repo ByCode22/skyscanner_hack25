@@ -55,45 +55,68 @@ body {
 .form-container {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px; /* Espaciado aumentado */
   width: 100%;
   align-items: center;
 }
 
-/* Contenedor del campo de nombre de usuario y el switch */
-.username-switch-container {
+/* Contenedor de nombre y ciudad */
+.username-container {
   display: flex;
-  justify-content: space-between;
+  gap: 20px;
   width: 100%;
-  gap: 5px;
+  justify-content: space-between;
   align-items: center;
 }
 
-/* Estilo del campo de entrada (nombre de usuario más pequeño) */
+/* Estilo del campo de nombre */
 .username-input {
   padding: 12px;
-  width: 35%;
-  margin: 0px 0;
+  width: 45%;
   border-radius: 5px;
   border: 1px solid #ccc;
   font-size: 1rem;
-  margin-left: 20px;
 }
 
-/* Switch para elegir entre "Crear" o "Unirse" */
+/* Estilo del campo de selección de ciudad */
+.city-select {
+  padding: 12px;
+  width: 45%;
+  margin: 0;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  background-color: #fff;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  transition: border-color 0.3s ease;
+}
+
+/* Estilo para el switch y Room ID alineados en una fila */
+.switch-room-container {
+  display: flex;
+  justify-content: space-between; /* Los elementos estarán alineados en una fila */
+  width: 100%;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Estilo para el switch */
 .switch-container {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-right: 30px;
+  flex: 1; /* Esto hace que el switch ocupe el espacio disponible */
 }
 
+/* Estilo del switch */
 .switch {
   position: relative;
   display: inline-block;
   width: 60px;
   height: 34px;
-  margin-left: 5px;
 }
 
 .switch input {
@@ -136,10 +159,10 @@ input:checked + .slider:before {
 
 /* Estilo para el campo de Room ID */
 .room-id-input {
-  padding: 12px;
-  width: 70%;
-  margin: 10px 0;
+  padding: 10px;
+  width: 40%; /* Reducimos el tamaño del campo */
   border-radius: 5px;
+  padding-left: 3px;
   border: 1px solid #ccc;
   font-size: 1rem;
 }
