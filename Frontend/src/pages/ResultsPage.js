@@ -71,7 +71,7 @@ const ResultsPage = () => {
 
           {/* Parte derecha: vuelos con scroll */}
           <div className="destination-right">
-            <h3>Available Flights</h3>
+            <h3 className="titleDestRight">Available Flights</h3>
             <div className="flights-container">
               {flights.map((flight, index) => (
                 <div 
