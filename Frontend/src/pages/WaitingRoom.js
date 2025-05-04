@@ -13,6 +13,15 @@ const WaitingRoom = () => {
   const [canStart, setCanStart] = useState(false);
   const navigate = useNavigate();
 
+  // Función para copiar el código al portapapeles
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(roomCode).then(() => {
+      alert("Room code copied to clipboard!");
+    }).catch(err => {
+      alert("Failed to copy room code");
+    });
+  };
+
   useEffect(() => {
     console.log("🧠 WaitingRoom mounted. roomId =", roomId);
 
@@ -82,7 +91,11 @@ const WaitingRoom = () => {
       </div>
 
       <div className="room-header">
-        <h2>Welcome to the room: {roomId}</h2>
+        <h2>Welcome to the room</h2>
+        <div className="room-id-container">
+          <p className="room-id"><strong>Room code:</strong> {roomId}</p>
+          <button className="copy-button" onClick={copyToClipboard}>Copy code</button>
+        </div>
         <p><strong>Participants:</strong> {participants.length}</p>
       </div>
 
