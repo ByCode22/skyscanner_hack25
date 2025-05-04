@@ -2,7 +2,7 @@
 
 /* Fondo general de la página */
 .results-container {
-  background: #ffedba;
+  background: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,7 +14,7 @@
 
 /* Contenedor principal de los resultados con fondo blanco transparente */
 .results-box {
-  background: rgba(255, 255, 255, 0.9); /* Fondo blanco con 90% de opacidad */
+  background: #f9f9f9e6; /* Fondo blanco con 90% de opacidad */
   border-radius: 12px;
   padding: 20px;
   text-align: center;
@@ -88,6 +88,7 @@
   background-color: #f9f9f9;
   border-radius: 12px;
   display: flex;
+  align-items: center;
   flex-direction: column;
   height: 400px;
 }
