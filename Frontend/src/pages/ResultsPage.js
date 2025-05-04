@@ -1,54 +1,46 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import './results.css';  // Asegúrate de que esté importado el CSS
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axios from 'axios';
+import './results.css';
 
 const ResultsPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { decision, flights, description } = location.state;
+  const [flightList, setFlightList] = useState(flights || []);
 
-  // Función para ir atrás
   const goBack = () => {
-    navigate('/'); // Regresa al Home
+    navigate('/');
   };
 
-  // Datos simulados de vuelos (estos vendrán de la API)
-  const flights = [
-    {
-      price: 68.97,
-      airline: "Vueling Airlines",
-      origin: "Barcelona",
-      destination: "Porto",
-      departure_time: "2025-05-11 15:20",
-      arrival_time: "2025-05-11 16:15",
-      duration_minutes: 115,
-      link: "https://www.google.com" // Enlace temporal
-    },
-    {
-      price: 120.50,
-      airline: "Iberia",
-      origin: "Barcelona",
-      destination: "Madrid",
-      departure_time: "2025-05-12 09:30",
-      arrival_time: "2025-05-12 10:40",
-      duration_minutes: 70,
-      link: "https://www.google.com"
-    },
-    {
-      price: 200.00,
-      airline: "Air France",
-      origin: "Barcelona",
-      destination: "Paris",
-      departure_time: "2025-05-13 12:00",
-      arrival_time: "2025-05-13 13:30",
-      duration_minutes: 90,
-      link: "https://www.google.com"
-    }
-  ];
+  useEffect(() => {
+    // Fetch flights if not already in state
+    const fetchFlights = async () => {
+      if (!flights && decision?.origin_iata && decision?.destination_iata && decision?.period) {
+        try {
+          const res = await axios.post('http://localhost:8000/search-flights', {
+            origin_iata: decision.origin_iata,
+            destination_iata: decision.destination_iata,
+            period: decision.period,
+            price: decision.price,
+          });
+
+          if (res.data?.flights) {
+            setFlightList(res.data.flights);
+          }
+        } catch (err) {
+          console.error("Flight fetch error:", err);
+        }
+      }
+    };
+
+    fetchFlights();
+  }, [decision, flights]);
 
   return (
     <div className="results-container">
-      {/* Flecha para regresar */}
       <div className="back-button" onClick={goBack}>
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <path d="M15 18l-6-6 6-6" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
         </svg>
       </div>
@@ -57,29 +49,27 @@ const ResultsPage = () => {
         <h2>Select Your Flight</h2>
 
         <div className="destination-content">
-          {/* Parte izquierda: imagen y descripción de la ciudad */}
+          {/* Left: city description */}
           <div className="destination-left">
             <div className="destination-image">
-              <img src="https://via.placeholder.com/150" alt="Barcelona" />
+              <img src="https://via.placeholder.com/150" alt={decision?.destination_iata} />
             </div>
             <div className="destination-text">
-              <h3>Barcelona</h3>
-              <p className="description">A beautiful Mediterranean city known for its art, culture, and stunning architecture.</p>
-              <p className="places">Places to visit: Sagrada Familia, Park Güell, La Rambla</p>
+              <h3>{decision?.selected || 'Destination'}</h3>
+              <p className="description">{description}</p>
             </div>
           </div>
 
-          {/* Parte derecha: vuelos con scroll */}
+          {/* Right: flights */}
           <div className="destination-right">
             <h3>Available Flights</h3>
             <div className="flights-container">
-              {flights.map((flight, index) => (
+              {flightList.map((flight, index) => (
                 <div 
                   className="flight-card" 
                   key={index} 
                   onClick={() => window.open(flight.link, "_blank")}
                 >
-                  {/* Estructura de los vuelos */}
                   <div className="flight-info">
                     <span><strong>From:</strong> {flight.origin}</span>
                     <div className="arrow">&rarr;</div>
@@ -97,6 +87,9 @@ const ResultsPage = () => {
                   <p className="price"><strong>Price:</strong> ${flight.price}</p>
                 </div>
               ))}
+              {flightList.length === 0 && (
+                <p>No flights found for your criteria.</p>
+              )}
             </div>
           </div>
         </div>

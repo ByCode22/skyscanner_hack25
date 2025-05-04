@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 import './questionnaire.css';
 import hostSocketService from '../services/HostSocketService';
 import guestSocketService from '../services/GuestSocketService';
@@ -45,32 +46,26 @@ const Questionnaire = () => {
     });
   
     socket.onFinalDecision(async (data) => {
-      console.log("🎉 Final destination selected:", data.selected);
-  
       try {
-        const response = await fetch("http://localhost:8000/search-flights", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(data)
+        const descRes = await axios.get("http://localhost:8000/city-description", {
+          params: { city_name: data.selected }
         });
-  
-        const result = await response.json();
-  
-        if (result.flights) {
-          navigate("/results", {
-            state: {
-              decision: data,
-              flights: result.flights
-            }
-          });
-        } else {
-          alert("No flights found.");
-        }
-  
-      } catch (error) {
-        console.error("Failed to fetch flights:", error);
+    
+        const description = typeof descRes.data === 'string'
+          ? descRes.data
+          : descRes.data.description || '';
+    
+        const flightRes = await axios.post("http://localhost:8000/search-flights", data);
+    
+        navigate("/results", {
+          state: {
+            decision: data,
+            flights: flightRes.data.flights,
+            description
+          }
+        });
+      } catch (err) {
+        console.error("Error fetching data:", err);
       }
     });
   
