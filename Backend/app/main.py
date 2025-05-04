@@ -1,18 +1,26 @@
 # app/main.py
 
+import os
+from dotenv import load_dotenv
 from fastapi import FastAPI, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Tuple
+from app.skyscannerAPI.search import get_flights
 from app.skyscannerAPI.AirportDatabase import AirportDatabase 
 from app.manager.room_manager import create_room, add_guest_to_room, remove_guest, delete_room, get_all_users
 from app.manager.question_manager import initialize_questions, handle_answer
 from app.manager.recommendation import handle_recommendation_response
 from app.manager.transport import calculate_final_transport
 from app.models.room_state import rooms, questions, recommendations
+from app.models.flight import FlightRequest
 from app.utils.broadcast import broadcast_to_room
+
+load_dotenv()
 
 app = FastAPI()
 airport_db = AirportDatabase()
+
+SKYSCANNER_API_KEY = os.getenv("SKYSCANNER_API_KEY")
 
 origins = [
     "http://localhost:3000",
@@ -153,3 +161,21 @@ def search_airports(name: str = Query(..., description="Full or partial airport 
     """
     return airport_db.search_airports_by_keyword(name)
 
+@app.post("/search-flights")
+async def search_flights(data: FlightRequest):
+    """
+    Given origin, destination, and start date, return a list of flights (<= price).
+    """
+    try:
+        year, month, day = map(int, data.period.start_date.split("-"))
+    except ValueError:
+        return {"error": "Invalid date format. Use YYYY-MM-DD"}
+    
+    print(SKYSCANNER_API_KEY)
+
+    flights = get_flights(SKYSCANNER_API_KEY, data.origin_iata, data.destination_iata, year, month, day)
+
+    if data.price is not None:
+        flights = [f for f in flights if f["price"] <= data.price]
+
+    return {"flights": flights}

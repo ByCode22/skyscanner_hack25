@@ -21,13 +21,15 @@ def create_search_session(api_key: str, origin: str, destination: str, date: dic
                     "date": date
                 }
             ],
-            "adults": 1
-            # "cabin_class": "CABIN_CLASS_ECONOMY"  # 생략 가능
+            "adults": 1,
+            "cabin_class": "CABIN_CLASS_ECONOMY"
         }
     }
+    print(payload)
 
     try:
         response = requests.post(url, headers=headers, json=payload)
+        print(response)
         response.raise_for_status()
         return response.json().get("sessionToken")
     except Exception as e:
@@ -45,6 +47,7 @@ def poll_search_results(api_key: str, session_token: str) -> Optional[Dict[str, 
     try:
         response = requests.post(url, headers=headers)
         response.raise_for_status()
+        print(response.json())
         return response.json()
     except Exception as e:
         print(f"Error polling results: {e}")

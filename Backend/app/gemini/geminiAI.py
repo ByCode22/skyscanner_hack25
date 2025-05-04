@@ -7,7 +7,8 @@ import os
 load_dotenv()
 
 # Configure Gemini API key
-genai.configure(api_key="AIzaSyBiElZs-VDNaoZIJAdmdYcf-dN1p77uhoE")
+GEMINI_API_KEY = os.getenv("GEMINIAI_API_KEY")
+genai.configure(api_key=GEMINI_API_KEY)
 
 def generar_prompt_pregunta(history):
     if len(history) > 0:
