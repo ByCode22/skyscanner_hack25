@@ -8,6 +8,7 @@ const HomePage = () => {
   const [username, setUsername] = useState('');
   const [roomId, setRoomId] = useState('');
   const [isJoiningRoom, setIsJoiningRoom] = useState(false);
+  const [city, setCity] = useState(''); // Estado para almacenar la ciudad seleccionada
   const navigate = useNavigate();
 
   const handleHostSocketConnection = () => {
@@ -16,18 +17,18 @@ const HomePage = () => {
         state: { username, roomCode },
       });
     });
-  
+
     hostSocketService.onOpen(() => {
       hostSocketService.sendHostInfo({
         name: username,
-        iata: 'BCN',
+        iata: city,  // Aquí pasamos la ciudad seleccionada
         price: 300,
       });
     });
-  
+
     hostSocketService.connect();
   };
-  
+
   const handleGuestSocketConnection = () => {
     guestSocketService.onJoined((roomCode, clientName, users) => {
       navigate(`/waiting-room/${roomCode}`, {
@@ -38,21 +39,21 @@ const HomePage = () => {
         },
       });
     });
-  
+
     guestSocketService.onError((message) => {
       alert("Failed to join room: " + message);
     });
-  
+
     guestSocketService.onOpen(() => {
       guestSocketService.sendJoinInfo();
     });
-  
+
     guestSocketService.connect(roomId, {
       name: username,
-      iata: 'ICN',
+      iata: city,  // Aquí también pasamos la ciudad seleccionada
       price: 450,
     });
-  };  
+  };
 
   const handleAction = () => {
     if (!username) {
@@ -62,6 +63,11 @@ const HomePage = () => {
 
     if (isJoiningRoom && !roomId) {
       alert('Please enter a room ID');
+      return;
+    }
+
+    if (!city) {
+      alert('Please select your city');
       return;
     }
 
@@ -81,7 +87,7 @@ const HomePage = () => {
         </p>
 
         <div className="form-container">
-          <div className="username-switch-container">
+          <div className="username-container">
             <input
               type="text"
               placeholder="Enter your name"
@@ -90,6 +96,22 @@ const HomePage = () => {
               className="username-input"
             />
 
+            <select
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="city-select"
+            >
+              <option value="">Select a city</option>
+              <option value="BCN">Barcelona</option>
+              <option value="ICN">Seoul</option>
+              <option value="NYC">New York</option>
+              <option value="LON">London</option>
+              <option value="TOK">Tokyo</option>
+            </select>
+          </div>
+
+          {/* Switch a la izquierda con texto fijo "Join Room" */}
+          <div className="switch-room-container">
             <div className="switch-container">
               <label className="switch">
                 <input
@@ -99,19 +121,20 @@ const HomePage = () => {
                 />
                 <span className="slider"></span>
               </label>
-              <span>{isJoiningRoom ? 'Create Room' : 'Join Room'}</span>
+              <span>Join Room</span> {/* El texto se mantiene fijo */}
             </div>
-          </div>
 
-          {isJoiningRoom && (
-            <input
-              type="text"
-              placeholder="Enter Room ID"
-              value={roomId}
-              onChange={(e) => setRoomId(e.target.value)}
-              className="room-id-input"
-            />
-          )}
+            {/* Contenedor para Room ID, alineado a la derecha */}
+            {isJoiningRoom && (
+              <input
+                type="text"
+                placeholder="  Enter Room ID"
+                value={roomId}
+                onChange={(e) => setRoomId(e.target.value)}
+                className="room-id-input"
+              />
+            )}
+          </div>
 
           <button onClick={handleAction} className="home-button">
             {isJoiningRoom ? 'Join Room' : 'Create Room'}
