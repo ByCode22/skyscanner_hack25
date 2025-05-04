@@ -101,6 +101,22 @@ def obtener_respuesta(history: list, pregunta: bool):
         print(f"Error generating question: {e}")
         return "Sorry, there was an error generating the questions."
     
+def get_city_description_response(cityName):
+    # Generate the prompt for the city description
+    prompt = generate_city_description_prompt(cityName)
+    
+    try:
+        # Use the Gemini model to generate content based on the prompt
+        model = genai.GenerativeModel("gemini-2.0-flash-lite")
+        response = model.generate_content(prompt)
+        
+        if response:
+            return response.text
+        else:
+            return "Sorry, I couldn't generate a description at this moment."
+    except Exception as e:
+        return f"Error generating description: {e}"
+    
     
 def extract_json_from_string(text: str):
     match = re.search(r"```(?:json)?\s*(.*?)\s*```", text, re.DOTALL)

@@ -5,6 +5,9 @@ from dotenv import load_dotenv
 from fastapi import FastAPI, Query, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Tuple
+
+from fastapi.responses import JSONResponse
+from app.gemini.geminiAI import get_city_description_response
 from app.skyscannerAPI.search import get_flights
 from app.skyscannerAPI.AirportDatabase import AirportDatabase 
 from app.manager.room_manager import create_room, add_guest_to_room, remove_guest, delete_room, get_all_users
@@ -177,3 +180,11 @@ async def search_flights(data: FlightRequest):
         flights = [f for f in flights if f["price"] <= data.price]
 
     return {"flights": flights}
+
+@app.get("/city-description")
+async def get_city_description(city_name: str = Query(..., description="Name of the city")):
+    """
+    Generate a description for the given city using Gemini AI.
+    """
+    description = get_city_description_response(city_name)
+    return JSONResponse(content={"description": description})
