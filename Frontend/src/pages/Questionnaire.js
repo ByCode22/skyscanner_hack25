@@ -158,7 +158,7 @@ const Questionnaire = () => {
               { label: "$100 – $250", range: "$100 – $250", notes: "Budget - Common short-haul fares" },
               { label: "$250 – $500", range: "$250 – $500", notes: "Mid-range - Standard regional/international" },
               { label: "$500 – $1000", range: "$500 – $1000", notes: "Higher-end - Long-haul or business fares" },
-              { label: "$1000 – $3000", range: "$1000 – $3000", notes: "Premium - Long-haul business/luxury" }
+              { label: "more than $1000", range: "$1000 – $3000", notes: "Premium - Long-haul business/luxury" }
             ].map((p, i) => (
               <div key={i} className={`price-option ${selectedPriceRange === p.range ? 'selected' : ''}`} onClick={() => setSelectedPriceRange(p.range)}>
                 <div className="price-label">{p.label}</div>
