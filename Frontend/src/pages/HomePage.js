@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './home.css';
 import hostSocketService from '../services/HostSocketService';
 import guestSocketService from '../services/GuestSocketService';
+import CityAutocomplete from '../components/CityAutocomplete';
 
 const HomePage = () => {
   const [username, setUsername] = useState('');
@@ -96,18 +97,7 @@ const HomePage = () => {
               className="username-input"
             />
 
-            <select
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              className="city-select"
-            >
-              <option value="">Select a city</option>
-              <option value="BCN">Barcelona</option>
-              <option value="ICN">Seoul</option>
-              <option value="NYC">New York</option>
-              <option value="LON">London</option>
-              <option value="TOK">Tokyo</option>
-            </select>
+            <CityAutocomplete city={city} setCity={setCity} />
           </div>
 
           {/* Switch a la izquierda con texto fijo "Join Room" */}
