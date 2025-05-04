@@ -43,7 +43,6 @@ class HostSocketService {
         else if (data.type === "question") {
           console.log("📩 Received AI question:", data);
           if (this.onQuestionCallback) {
-            console.log("what happens?")
             this.onQuestionCallback(data);
           }
         }

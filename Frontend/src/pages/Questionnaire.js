@@ -21,13 +21,17 @@ const Questionnaire = () => {
   const socket = isHost ? hostSocketService : guestSocketService;
 
   useEffect(() => {
+    console.log("🧠 currentQuestionData updated:", currentQuestionData);
+  }, [currentQuestionData]);
+
+  useEffect(() => {
     const handler = (data) => {
       setCurrentQuestionData({
         question: data.question,
         options: data.options
       });
-      setShowRecommendation(false);
       setWaitingForResponses(false);
+      setShowRecommendation(false);
       setCurrentQuestion(data.question_id);
     };
   
@@ -167,7 +171,7 @@ const Questionnaire = () => {
 
       {showRecommendation && recommendationItems && (
         <div className="recommendation-container">
-          <h2 className="question-title">{recommendationItems.question}</h2>
+          <h2 className="question-title">{"Do any of these cities catch your eye?"}</h2>
           <div className="option-grid">
             {recommendationItems.options.map((opt, i) => (
               <div key={i} className="option-box" onClick={() => handleRecommendation({ index: i })}>
