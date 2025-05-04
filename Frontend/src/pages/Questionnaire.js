@@ -78,10 +78,6 @@ const Questionnaire = () => {
     setErrorMessage(""); 
   };
 
-  const removePeriod = (index) => {
-    setPeriods(periods.filter((_, i) => i !== index));
-  };
-
   const addPeriod = () => setPeriods([...periods, { startDate: '', endDate: '' }]);
   const removePeriod = (index) => setPeriods(periods.filter((_, i) => i !== index));
 
