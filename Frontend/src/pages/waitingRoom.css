@@ -1,142 +1,158 @@
 /* Fondo general de la página */
 body {
-    background: linear-gradient(135deg, #6e7cfa 0%, #ff7f50 100%); /* Gradiente suave */
-    margin: 0;
-    padding: 0;
-    font-family: 'Roboto', sans-serif;
-    height: 100vh; /* Asegura que el fondo cubra toda la altura de la ventana */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  /* Contenedor principal de la Waiting Room */
-  .waiting-room-container {
-    background-color: #ffffff;
-    border-radius: 12px;
-    padding: 40px;
-    width: 80%;
-    max-width: 600px;
-    margin: 20px auto;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    color: #333; /* Cambio para que el texto sea legible sobre el fondo */
-  }
-  
-  /* Cabecera de la sala */
-  .room-header {
-    margin-bottom: 30px;
-  }
-  
-  .room-header h2 {
-    font-size: 2rem;
-    font-weight: bold;
-    color: #333;
-  }
-  
-  .room-header p {
-    font-size: 1.1rem;
-    color: #555;
-  }
-  
-  /* Estilo para la lista de participantes */
-  .participants-list {
-    margin-bottom: 30px;
-    text-align: left;
-  }
-  
-  .participant-item {
-    font-size: 1.1rem;
-    color: #333;
-    padding: 8px;
-    margin-bottom: 10px;
-    background-color: #f9f9f9;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .participant-item:nth-child(even) {
-    background-color: #f1f1f1;
-  }
-  
-  .participant-item span {
-    font-weight: 500;
-  }
-  
-  /* Estilo para el botón de Iniciar Quiz */
-  .start-button-container {
-    display: flex;
-    justify-content: center;
-  }
-  
-  .start-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 15px 30px;
-    font-size: 1.3rem;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    border: none;
-    box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
-  }
-  
-  .start-btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-4px);
-  }
-  
-  .start-btn:disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-  }
-  
-  .start-btn:disabled:hover {
-    background-color: #ccc;
-    transform: none;
-  }
+  background: linear-gradient(135deg, #6e7cfa 0%, #ff7f50 100%); /* Gradiente suave */
+  margin: 0;
+  padding: 0;
+  font-family: 'Roboto', sans-serif;
+  height: 100vh; /* Asegura que el fondo cubra toda la ventana */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  /* Añadimos el estilo para la flecha */
+/* Contenedor principal de la Waiting Room */
+.waiting-room-container {
+  background-color: #ffffff;
+  border-radius: 12px;
+  padding: 40px;
+  width: 80%;
+  max-width: 600px;
+  margin: 20px auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  color: #333; /* Cambio para que el texto sea legible sobre el fondo */
+}
+
+/* Cabecera de la sala */
+.room-header {
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.room-header h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+/* Código de la sala */
+.room-id-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  width: 100%;
+  margin-right: 100px;
+}
+
+.room-id {
+  font-size: 1.0rem;
+  margin-left: 100px;
+}
+
+/* Botón de copiar */
+.copy-button {
+  background-color: #007bff;
+  color: white;
+  padding: 5px 12px;
+  font-size: 1.0rem;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.copy-button:hover {
+  background-color: #0056b3;
+}
+
+.copy-button:active {
+  transform: translateY(2px);
+}
+
+/* Estilo para la lista de participantes */
+.participants-list {
+  margin-bottom: 30px;
+  text-align: left;
+}
+
+.participant-item {
+  font-size: 1.0rem;
+  color: #333;
+  padding: 8px;
+  margin-bottom: 10px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.participant-item:nth-child(even) {
+  background-color: #f1f1f1;
+}
+
+.participant-item span {
+  font-weight: 500;
+}
+
+/* Estilo para el botón de Iniciar Quiz */
+.start-button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.start-btn {
+  background-color: #007bff;
+  color: white;
+  padding: 15px 30px;
+  font-size: 1.3rem;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  border: none;
+  box-shadow: 0 5px 15px rgba(0, 123, 255, 0.2);
+}
+
+.start-btn:hover {
+  background-color: #0056b3;
+  transform: translateY(-4px);
+}
+
+.start-btn:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.start-btn:disabled:hover {
+  background-color: #ccc;
+  transform: none;
+}
+
+/* Añadimos el estilo para la flecha */
 .back-button {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    cursor: pointer;
-    z-index: 1;
-  }
-  
-  .back-button svg {
-    width: 24px;
-    height: 24px;
-    fill: none;
-    stroke: #007bff;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: all 0.3s ease;
-  }
-  
-  .back-button:hover svg {
-    stroke: #0056b3;
-  }
-  
-  /* El resto del código no cambia */
-  .waiting-room-container {
-    position: relative;
-    background-color: #ffffff;
-    border-radius: 12px;
-    padding: 40px;
-    width: 80%;
-    max-width: 600px;
-    margin: 20px auto;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    color: #333;
-  }
-  
-  /* Otros estilos existentes */
-  
-  
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.back-button svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: #007bff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover svg {
+  stroke: #0056b3;
+}
