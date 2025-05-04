@@ -49,10 +49,24 @@ async def handle_recommendation_response(websocket: WebSocket, room_code: str, a
                     break
                 all_ws = [rooms[room_code]["host"][0]] + [guest[0] for guest in rooms[room_code]["guests"]]
                 for ws in all_ws:
+                    if ws == rooms[room_code]["host"][0]:
+                        user_data = rooms[room_code]["host"]
+                    else:
+                        guest_index = [guest[0] for guest in rooms[room_code]["guests"]].index(ws)
+                        user_data = rooms[room_code]["guests"][guest_index]
+
+                    period = None
+                    history = questions.get(room_code, {}).get("history", [])
+                    if history and isinstance(history[0]["answer"], dict):
+                        period = history[0]["answer"]
+
                     await ws.send_json({
                         "type": "final_decision",
                         "selected": recommendations[room_code]["items"]["options"][item],
-                        "iata": extract_iata(recommendations[room_code]["items"]["options"][item])
+                        "destination_iata": extract_iata(recommendations[room_code]["items"]["options"][item]),
+                        "origin_iata": user_data[2],
+                        "price": user_data[3],
+                        "period": period
                     })
                 return
         entry = questions.get(room_code)
