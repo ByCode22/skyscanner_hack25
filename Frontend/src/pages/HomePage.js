@@ -99,7 +99,7 @@ const HomePage = () => {
                 />
                 <span className="slider"></span>
               </label>
-              <span>{isJoiningRoom ? 'Join Room' : 'Create Room'}</span>
+              <span>{isJoiningRoom ? 'Create Room' : 'Join Room'}</span>
             </div>
           </div>
 

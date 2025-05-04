@@ -6,6 +6,9 @@ class HostSocketService {
     this.onRoomCreatedCallback = null;
     this.onGuestJoinedCallback = null;
     this.onOpenCallback = null;
+    this.onQuestionCallback = null;
+    this.onRecommendationCallback = null;
+    this.onFinalDecisionCallback = null;
   }
 
   connect() {
@@ -30,12 +33,30 @@ class HostSocketService {
             this.onRoomCreatedCallback(this.roomCode, data.host_name);
           }
         }
-
         else if (data.type === "guest_joined") {
           console.log("Guest joined:", data.client_name, "with", data.users);
 
           if (this.onGuestJoinedCallback) {
             this.onGuestJoinedCallback(data.room_code, data.client_name, data.users);
+          }
+        }
+        else if (data.type === "question") {
+          console.log("📩 Received AI question:", data);
+          if (this.onQuestionCallback) {
+            console.log("what happens?")
+            this.onQuestionCallback(data);
+          }
+        }
+        else if (data.type === "recommendation") {
+          console.log("📦 Received recommendation:", data.items);
+          if (this.onRecommendationCallback) {
+            this.onRecommendationCallback(data.items);
+          }
+        }
+        else if (data.type === "final_decision") {
+          console.log("✅ Final decision received:", data);
+          if (this.onFinalDecisionCallback) {
+            this.onFinalDecisionCallback(data);
           }
         }
 
@@ -96,6 +117,18 @@ class HostSocketService {
 
   onOpen(callback) {
     this.onOpenCallback = callback;
+  }
+
+  onQuestion(callback) {
+    this.onQuestionCallback = callback;
+  }
+
+  onRecommendation(callback) {
+    this.onRecommendationCallback = callback;
+  }
+  
+  onFinalDecision(callback) {
+    this.onFinalDecisionCallback = callback;
   }
 
   getRoomCode() {

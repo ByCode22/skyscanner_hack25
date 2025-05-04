@@ -26,7 +26,7 @@ async def trigger_recommendation(room_code: str):
         "total_participants": total
     }
 
-    all_ws = [rooms[room_code]["host"]] + rooms[room_code]["guests"]
+    all_ws = [rooms[room_code]["host"][0]] + [guest[0] for guest in rooms[room_code]["guests"]]
     for ws in all_ws:
         await ws.send_json({
             "type": "recommendation",
@@ -47,7 +47,7 @@ async def handle_recommendation_response(websocket: WebSocket, room_code: str, a
             if votes > total / 2:
                 if item == 3:
                     break
-                all_ws = [rooms[room_code]["host"]] + rooms[room_code]["guests"]
+                all_ws = [rooms[room_code]["host"][0]] + [guest[0] for guest in rooms[room_code]["guests"]]
                 for ws in all_ws:
                     await ws.send_json({
                         "type": "final_decision",
@@ -62,7 +62,7 @@ async def handle_recommendation_response(websocket: WebSocket, room_code: str, a
             entry["current_options"] = next_question["options"]
             entry["responses"] = []
 
-            all_ws = [rooms[room_code]["host"]] + rooms[room_code]["guests"]
+            all_ws = [rooms[room_code]["host"][0]] + [guest[0] for guest in rooms[room_code]["guests"]]
             for ws in all_ws:
                 await ws.send_json({
                     "type": "question",

@@ -40,13 +40,12 @@ async def host_endpoint(websocket: WebSocket):
         
         name = data.get("name")
         iata = data.get("iata")
-        price = data.get("price")
 
-        if not name or not iata or not price:
+        if not name or not iata:
             await websocket.close()
             return
 
-        room_code = create_room(websocket, name, iata, price)
+        room_code = create_room(websocket, name, iata)
 
         await websocket.send_json({"type": "room_created", "room_code": room_code, "host_name": name})
 
@@ -102,9 +101,8 @@ async def guest_endpoint(websocket: WebSocket, room_code: str):
         
         name = guest_data.get("name")
         iata = guest_data.get("iata")
-        price = guest_data.get("price")
 
-        if not name or not iata or not price:
+        if not name or not iata:
             await websocket.send_json({
                 "type": "error",
                 "message": "Missing guest information"
@@ -112,7 +110,7 @@ async def guest_endpoint(websocket: WebSocket, room_code: str):
             await websocket.close()
             return
 
-        if not add_guest_to_room(room_code, websocket, name, iata, price):
+        if not add_guest_to_room(room_code, websocket, name, iata):
             await websocket.send_json({
                 "type": "error",
                 "message": "Could not join room"

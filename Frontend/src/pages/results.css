@@ -2,108 +2,114 @@
 
 /* Fondo general de la página */
 .results-container {
-    background: #f7f7f7;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Asegura que ocupe el 100% de la altura de la pantalla */
-    padding: 20px;
-    position: relative;
-  }
-  
-  /* Contenedor principal de los resultados */
-  .results-box {
-    background-color: white;
-    border-radius: 12px;
-    padding: 20px;
-    text-align: center;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px; /* Mantener el ancho reducido */
-    height: 380px; /* Reducimos la altura para que sea más compacto */
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  
-  /* Título de los resultados */
-  .results-box h2 {
-    font-size: 1.6rem;
-    color: #333;
-    margin-bottom: 20px;
-  }
-  
-  /* Estilo para las tarjetas de las ciudades */
-  .destination-card {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px; /* Reducimos el espacio entre las tarjetas */
-    padding: 15px;
-    background-color: #f0f4f8;
-    border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  }
-  
-  .destination-card:hover {
-    background-color: #e0e0e0;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  }
-  
-  /* Estilo para la imagen de la ciudad */
-  .destination-image img {
-    width: 80px; /* Se reduce el tamaño de la imagen */
-    height: 80px;
-    border-radius: 10px;
-    object-fit: cover;
-  }
-  
-  /* Texto de la ciudad */
-  .destination-text {
-    flex: 1;
-    margin-left: 15px;
-    text-align: left;
-  }
-  
-  .destination-text h3 {
-    font-size: 1.2rem;
-    color: #333;
-    margin-bottom: 5px;
-  }
-  
-  .destination-text .description {
-    font-size: 0.9rem;
-    color: #555;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-  
-  /* Flecha para regresar */
-  .back-button {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    cursor: pointer;
-    z-index: 1;
-  }
-  
-  .back-button svg {
-    width: 24px;
-    height: 24px;
-    fill: none;
-    stroke: #007bff;
-    stroke-width: 2;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    transition: all 0.3s ease;
-  }
-  
-  .back-button:hover svg {
-    stroke: #0056b3;
-  }
-  
-  * {
-    user-select: none;
-  }
-  
+  background: #f7f7f7;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Mantener la altura completa de la pantalla */
+  padding: 10px;
+  height: auto;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden; /* Evita la barra de desplazamiento */
+}
+
+/* Contenedor principal de los resultados */
+.results-box {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 600px; /* Tamaño máximo del contenedor */
+  height: auto; /* Ajusta la altura al contenido */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow-y: auto; /* Permite que solo se desplace si es necesario */
+}
+
+/* Título de los resultados */
+.results-box h2 {
+  font-size: 2rem;
+  color: #333;
+  font-weight: 500;  /* Peso de fuente ligeramente más pesado */
+  margin-bottom: 20px;
+}
+
+/* Estilo para las tarjetas de las ciudades */
+.destination-card {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.destination-card:hover {
+  background-color: #f5f5f5;  /* Fondo gris suave en hover */
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Estilo para la imagen de la ciudad */
+.destination-image img {
+  width: 90px; /* Mayor tamaño de la imagen */
+  height: 90px;
+  border-radius: 12px;
+  object-fit: cover;
+  margin-right: 20px;  /* Espacio entre la imagen y el texto */
+}
+
+/* Texto de la ciudad */
+.destination-text {
+  text-align: left;
+  max-width: 500px;  /* Limitar el texto para mantener la estructura limpia */
+}
+
+.destination-text h3 {
+  font-size: 1.3rem;
+  color: #333;
+  font-weight: 600;  /* Peso de fuente más grueso */
+  margin-bottom: 8px;
+}
+
+.destination-text .description {
+  font-size: 1rem;
+  color: #666;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Flecha para regresar */
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 15px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.back-button svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: #007bff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover svg {
+  stroke: #0056b3;
+}
+
+/* Ajustes generales */
+* {
+  user-select: none;
+}

@@ -1,4 +1,3 @@
-// src/pages/ResultsPage.js
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './results.css';  // Asegúrate de que esté importado el CSS
@@ -26,7 +25,7 @@ const ResultsPage = () => {
         {/* Ciudad 1 */}
         <div className="destination-card">
           <div className="destination-image">
-            <img src="https://via.placeholder.com/100" alt="City 1" />
+            <img src="https://via.placeholder.com/150" alt="Barcelona" />
           </div>
           <div className="destination-text">
             <h3>Barcelona</h3>
@@ -37,7 +36,7 @@ const ResultsPage = () => {
         {/* Ciudad 2 */}
         <div className="destination-card">
           <div className="destination-image">
-            <img src="https://via.placeholder.com/100" alt="City 2" />
+            <img src="https://via.placeholder.com/150" alt="Paris" />
           </div>
           <div className="destination-text">
             <h3>Paris</h3>
@@ -48,7 +47,7 @@ const ResultsPage = () => {
         {/* Ciudad 3 */}
         <div className="destination-card">
           <div className="destination-image">
-            <img src="https://via.placeholder.com/100" alt="City 3" />
+            <img src="https://via.placeholder.com/150" alt="New York" />
           </div>
           <div className="destination-text">
             <h3>New York</h3>
